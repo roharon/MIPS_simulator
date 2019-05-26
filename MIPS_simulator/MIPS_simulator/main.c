@@ -1,4 +1,5 @@
-#include <stdio.h>
+#include "MIPS.h"
+//#include "Hash.h"
 
 /*
 Program counter는 동일하게 구현
@@ -28,4 +29,45 @@ $ra 31
 
 int main() {
 	
+	FILE *fpointer;
+	REGISTER = (int*)calloc(32, sizeof(int));
+
+	while (1) {
+		
+		scanf("%[^\n]", cmd);
+		user_cmd = cmd[0];
+
+		switch (user_cmd) {
+			case 'l':
+				fpointer = fopen(cmd[2], "r");
+				if (fpointer == NULL) {
+					printf("Error opening file");
+				}
+				setPC(0x400000);
+
+
+				break;
+			case 'j':
+				break;
+			case 'g':
+				break;
+			case 's':
+				break;
+			case 'm':
+				break;
+			case 'r':
+				break;
+			case 'x':
+				break;
+
+		}
+	}
+
+
+
+
+
+
+
+	free(REGISTER);
 }

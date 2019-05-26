@@ -439,3 +439,6 @@ healthchecksdb
 MigrationBackup/
 
 # End of https://www.gitignore.io/api/c,git,windows,visualstudio
+*.vcxproj
+*.filters
+*.sln
