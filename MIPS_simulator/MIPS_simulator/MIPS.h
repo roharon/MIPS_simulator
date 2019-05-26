@@ -2,7 +2,31 @@
 #include <stdlib.h>
 #include <string.h>
 
-#pragma warning(disable:4996)
+#pragma once
+
+#pragma warning(disable: 4996)
+
+int ALU(int X, int Y, int C, int* Z);
+int logicOperation(int X, int Y, int C);
+int addSubtract(int X, int Y, int C);
+int shiftOperation(int V, int Y, int C);
+int checkZero(int S);
+int checkSetLess(int X, int Y);
+// ALU.h
+void step(void);
+
+int bin_read(void);
+void ops_Inst(char Opt[], char Funct[]);
+const char* Inst_Enc(char enc_target[], char f_val[]);
+// a.h
+
+unsigned int MEM(unsigned int A, int V, int nRW, int s);
+// MEM.h
+
+unsigned int REG(unsigned int A, unsigned int V, unsigned int nRW);
+void showRegister(void);
+// REG.h
+void setPC(unsigned int val);
 
 #define M_SIZE 9999
 #define EQUAL(cmd, value) (strcmp(cmd,value)==0)
@@ -40,48 +64,5 @@
 #define fp 30
 #define ra 31
 
-int ALU(int X, int Y, int C, int* Z);
-int logicOperation(int X, int Y, int C);
-int addSubtract(int X, int Y, int C);
-int shiftOperation(int V, int Y, int C);
-int checkZero(int S);
-int checkSetLess(int X, int Y);
-// ALU.h
-void step(void);
 
 
-int bin_read();
-void ops_Inst(char Opt[], char Funct[]);
-const char* Inst_Enc(char enc_target[], char f_val[]);
-// a.h
-
-int* REGISTER;
-// 레지스터 저장공간
-char cmd[50] = "";
-char user_cmd = ' ';
-// 유저커맨드 저장공간
-
-
-unsigned int MEM(unsigned int A, int V, int nRW, int s);
-// MEM.h
-
-unsigned int REG(unsigned int A, unsigned int V, unsigned int nRW);
-void showRegister(void);
-// REG.h
-void setPC(unsigned int val);
-
-union itype {
-	unsigned int I;
-	struct rtype {
-		unsigned int opcode : 6;
-		unsigned int rs : 5;
-		unsigned int rt : 5;
-		unsigned int rd : 5;
-		unsigned int funct : 6;
-	} RI;
-} IR;
-
-
-int PC = 0x400000;
-int SP = 0x80000000;
-unsigned char progMEM[0x100000], dataMEM[0x100000], stakMEM[0x100000];

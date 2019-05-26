@@ -9,6 +9,10 @@
 // MEM함수 호출하면 주소변환 통해 각 메모리 접근
 // 읽기에는 V 의미없고 반환값 받음
 // 쓰기에는 반환값이 의미없다
+extern char* progMEM;
+extern char* dataMEM;
+extern char* stackMEM;
+
 
 unsigned int MEM(unsigned int A, int V, int nRW, int S) {
 	unsigned int sel, offset;
@@ -16,7 +20,7 @@ unsigned int MEM(unsigned int A, int V, int nRW, int S) {
 	sel = A >> 20;    offset = A & 0xFFFFF;
 	if (sel == 0x004) pM = progMEM;         // program memory
 	else if (sel == 0x100) pM = dataMEM;  // data memory
-	else if (sel == 0x7FF) pM = stakMEM;  // stack
+	else if (sel == 0x7FF) pM = stackMEM;  // stack
 	else {
 		printf("No memory\n");
 		return 1;

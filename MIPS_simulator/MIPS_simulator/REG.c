@@ -1,5 +1,10 @@
 #include "MIPS.h"
 
+extern int* REGISTER;
+extern int PC;
+
+void setPC(unsigned int);
+
 unsigned int REG(unsigned int A, unsigned int V, unsigned int nRW) {
 	// A : memory address
 	// V: write value
@@ -8,7 +13,7 @@ unsigned int REG(unsigned int A, unsigned int V, unsigned int nRW) {
 
 	if (nRW == 0) {
 		//read
-		V = *(REGISTER + (A*4));
+		V = *(REGISTER + (A * 4));
 		// int니 4byte씩 증가
 		return V;
 	}
@@ -18,13 +23,12 @@ unsigned int REG(unsigned int A, unsigned int V, unsigned int nRW) {
 		return 0;
 	}
 
-	
+
 }
 
 void showRegister(void) {
-	int i;
 	printf("[REGISTER]\n");
-	
+
 	for (int i = 0; i < REG_SIZE; i++) {
 		printf("R%d = %d", i, REGISTER[i]);
 	}

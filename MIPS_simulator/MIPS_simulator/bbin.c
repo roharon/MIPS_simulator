@@ -1,7 +1,7 @@
 ﻿#include "MIPS.h"
+
 const char PATH[] = "C:/roharon98/HUFS/Computer_structure/report3/machine_example/as_ex04_fct.bin";
 // bin 파일경로
-
 /*
 	처음 앞 4개 4개는 각각 명령어 수와 데이터 수
 
@@ -20,6 +20,7 @@ lw $4, 0($29)
 00100 // 4 - rt
 0000000000000000‬ // 0
 */
+
 
 int bin_read()
 {
