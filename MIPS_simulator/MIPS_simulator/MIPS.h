@@ -52,7 +52,7 @@ void step(void);
 
 int bin_read();
 void ops_Inst(char Opt[], char Funct[]);
-char* Inst_Enc(char enc_target[]);
+const char* Inst_Enc(char enc_target[], char f_val[]);
 // a.h
 
 int* REGISTER;
@@ -70,5 +70,18 @@ void showRegister(void);
 // REG.h
 void setPC(unsigned int val);
 
+union itype {
+	unsigned int I;
+	struct rtype {
+		unsigned int opcode : 6;
+		unsigned int rs : 5;
+		unsigned int rt : 5;
+		unsigned int rd : 5;
+		unsigned int funct : 6;
+	} RI;
+} IR;
 
-int PC = 0;
+
+int PC = 0x400000;
+int SP = 0x80000000;
+unsigned char progMEM[0x100000], dataMEM[0x100000], stakMEM[0x100000];

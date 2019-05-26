@@ -1,4 +1,5 @@
 #include "MIPS.h"
+
 //#include "Hash.h"
 
 /*
@@ -26,9 +27,16 @@ $sp 29
 $fp 30
 $ra 31
 */
+int bin_read();
+void setPC(unsigned int val);
+
+
+void asm_load() {
+	FILE *asm_file = fopen("aa","r");
+}
 
 int main() {
-	
+	bin_read();
 	FILE *fpointer;
 	REGISTER = (int*)calloc(32, sizeof(int));
 
@@ -39,12 +47,11 @@ int main() {
 
 		switch (user_cmd) {
 			case 'l':
-				fpointer = fopen(cmd[2], "r");
+				fpointer = fopen("a", "r");
 				if (fpointer == NULL) {
 					printf("Error opening file");
 				}
 				setPC(0x400000);
-
 
 				break;
 			case 'j':

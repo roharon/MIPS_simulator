@@ -1,5 +1,4 @@
 ﻿#include "MIPS.h"
-
 const char PATH[] = "C:/roharon98/HUFS/Computer_structure/report3/machine_example/as_ex04_fct.bin";
 // bin 파일경로
 
@@ -21,9 +20,6 @@ lw $4, 0($29)
 00100 // 4 - rt
 0000000000000000‬ // 0
 */
-
-void ops_Inst(char Opt[], char Funct[]);
-char* Inst_Enc(char enc_target[]);
 
 int bin_read()
 {
@@ -103,12 +99,12 @@ void ops_Inst(char Opt[], char Funct[])
 	printf("Opc : %4x,  Fct : %4x, Inst : %s\n", opt_Hex, funct_Hex, Inst_Enc(Opt, Funct));
 }
 
-char* Inst_Enc(char enc_target[], char f_val[]) {
+const char* Inst_Enc(char enc_target[], char f_val[]) {
 	// opcode의 6비트(2진수 형식으로 나타낸 문자열) 을 명령어로 나타내도록 구현
 	// strcmp 리턴값 equal: == 0 | unequal: != 0
 	// R_format일때(000000) 인코딩 2-0 5-3 구간 표대로 구현
 	//printf("\n%s %s\n", enc_target, f_val);
-
+	char result[10] = "";
 	if EQUAL(enc_target, "000000") {
 		//R-format
 		if EQUAL(f_val, "000000")
