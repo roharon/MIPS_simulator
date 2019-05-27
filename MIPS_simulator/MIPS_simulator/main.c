@@ -29,6 +29,8 @@ extern char PATH[];
 extern int* REGISTER;
 extern int PC;
 extern int SP;
+
+int STEP = 0;
 char cmd[50] = "";
 char user_cmd = ' ';
 
@@ -46,7 +48,7 @@ int main(int argc, char* argv[]) {
 		switch (user_cmd) {
 
 		case '-':
-			bin_read();
+			bin_read(0,0);
 			break;
 
 		case 'l':

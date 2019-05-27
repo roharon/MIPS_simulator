@@ -61,6 +61,12 @@ opcode	rs	rt	immediate
 */
 
 extern int PC;
+unsigned char rs[40] = "";
+unsigned char rt[40] = "";
+unsigned char rd[40] = "";
+unsigned char sh[40] = "";
+unsigned char operand[40] = "";
+unsigned char jump_target_address[40] = "";
 
 int bin_read()
 {
@@ -84,16 +90,11 @@ int bin_read()
 
 	unsigned char var_temp;
 	
-	unsigned char rs[40] = "";
-	unsigned char rt[40] = "";
-	unsigned char rd[40] = "";
-	unsigned char sh[40] = "";
-	unsigned char operand[40] = "";
-	unsigned char jump_target_address[40] = "";
+
 	
 
 	while (1 == fread(&MEM[count], 1, 1, pFile)) {
-		PC += 4;
+		setPC(getPC() + 4);
 		IR = MEM[count];
 
 		if (((count + 1) % 4 == 0) && (count + 1 > 8)) {
@@ -175,9 +176,11 @@ int bin_read()
 			rs[5] = '\0';
 			// rs에 모두 저장해서 나누는 것이므로 rs는 맨 마지막에 처리해야함.
 
-			printf("opt is %s rs is %s rt is %s rd is %s fn is %s\n", opt, rs, rt, rd, funct);
+			printf("opt is %s rs is %s rt is %s rd is %s fn is %s operand is %s\n", opt, rs, rt, rd, funct, operand);
 			
 			ops_Inst(opt, funct);
+
+			
 		}
 
 		//printf("opt is %s rs is %s rt is %s rd is %s fn is %s\n", opt, rs, rt, rd, funct);

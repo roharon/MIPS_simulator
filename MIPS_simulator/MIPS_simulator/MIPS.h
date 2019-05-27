@@ -31,6 +31,8 @@ void showRegister(void);
 void setPC(unsigned int val);
 int getPC();
 
+int fromBinary(const char*);
+
 #define M_SIZE 9999
 #define EQUAL(cmd, value) (strcmp(cmd,value)==0)
 
