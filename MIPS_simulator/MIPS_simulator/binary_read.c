@@ -61,6 +61,7 @@ opcode	rs	rt	immediate
 */
 
 extern int PC;
+extern int target_address;
 unsigned char rs[40] = "";
 unsigned char rt[40] = "";
 unsigned char rd[40] = "";
@@ -68,7 +69,7 @@ unsigned char sh[40] = "";
 unsigned char operand[40] = "";
 unsigned char jump_target_address[40] = "";
 
-int bin_read(int step)
+int bin_read(int step, int jum)
 {
 	unsigned char MEM[M_SIZE];
 	FILE *pFile = NULL;
@@ -89,16 +90,26 @@ int bin_read(int step)
 	char funct[40] = "";
 
 	unsigned char var_temp;
-	
-
-	
 
 	while (1 == fread(&MEM[count], 1, 1, pFile)) {
-		setPC(getPC() + 4);
-		IR = MEM[count];
+		if (step == 0) {
+			setPC(getPC() + 4);
+			IR = MEM[count];
+		}
+		else if(jum !=0) {
+			count = (target_address- 0x400000);
+			// 명령어 j
+			// 시작위치 - PC의 시작값
+			//printf("count %d",count);
+		}
+		else if (step == 1) {
+			// s, step명령 위함
+			count = (getPC() - 0x400000);
+			//printf("%d", count);
+		}
 
 		if (((count + 1) % 4 == 0) && (count + 1 > 8)) {
-			printf("=-=-=-=-= count : %d   Hexa : %x =-=-=-=-=-=-=-=\n", count, MEM[count]);
+			//printf("=-=-=-=-= count : %d   Hexa : %x =-=-=-=-=-=-=-=\n", count, MEM[count]);
 			//   00 11 01. 00 00 0.0 00 00.
 			//	 00 11 01. 00 00 0.0 00 00.
 			//itoa(MEM[count - 12], opt, 16);
@@ -176,10 +187,13 @@ int bin_read(int step)
 			rs[5] = '\0';
 			// rs에 모두 저장해서 나누는 것이므로 rs는 맨 마지막에 처리해야함.
 
-			printf("opt is %s rs is %s rt is %s rd is %s fn is %s operand is %s\n", opt, rs, rt, rd, funct, operand);
+			//printf("opt is %s rs is %s rt is %s rd is %s fn is %s operand is %s\n", opt, rs, rt, rd, funct, operand);
 			
 			ops_Inst(opt, funct);
-
+			printf("1");
+			if (step == 1) {
+				break;
+			}
 			
 		}
 
@@ -209,7 +223,7 @@ void ops_Inst(char Opt[], char Funct[])
 	opt_Hex = strtol(Opt, &pos, 2);
 	funct_Hex = strtol(Funct, &pos, 2);
 
-	printf("Opc : %4x,  Fct : %4x, Inst : %s\n", opt_Hex, funct_Hex, Inst_ALU(Opt, Funct));
+	//printf("Opc : %4x,  Fct : %4x, Inst : %s\n", opt_Hex, funct_Hex, Inst_ALU(Opt, Funct));
 }
 
 const char* Inst_ALU(char enc_target[], char f_val[]) {

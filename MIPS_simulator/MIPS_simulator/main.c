@@ -31,23 +31,26 @@ extern int* REGISTER;
 extern int PC;
 extern int SP;
 
+int target_address = 0;
 int STEP = 0;
 char cmd[50] = "";
+char* result;
 char user_cmd = ' ';
 
 int main(int argc, char* argv[]) {
-	//bin_read();
 	FILE *fpointer = NULL;
 	REGISTER = (int*)calloc(32, sizeof(int));
-	printf("%d", REG(0, 0, 0));
 	REGISTER[sp] = stackMEM;
 	// sp레지스터 stackMEM에 연결
 
+	char var1[10] = "";
+	char var2[10] = "";
+
 	errno_t err = 0;
-	int target_address = 0;
 	while (1) {
 		printf("enter the command : ");
 		scanf("%[^\n]", cmd);
+		fflush(stdin);
 		user_cmd = cmd[0];
 
 		switch (user_cmd) {
@@ -66,27 +69,26 @@ int main(int argc, char* argv[]) {
 				printf("\n==CAN NOT OPEN FILE ==\nfile name = %s\n", cmd);
 				break;
 			}
-
 			strcpy(PATH, cmd);
-			
 			PC = 0x400000;
 			setPC(0x400000);
-			//fpointer = fopen("C:/roharon98/HUFS/Computer_structure/report3/machine_example/as_ex04_fct.bin", "r");
 			break;
 
-		case 'j':
+		case 'j':			
 			scanf("%x", &target_address);
-			if (fpointer != NULL)
-				bin_read(fpointer, target_address, 1);
 			break;
 
 		case 'g':
+			bin_read(0, 0);
+			// 현재 PC위치에서 시뮬레이터가 명령어 끝까지 처리
 			break;
 
 		case 's':
+			bin_read(1, 0);
 			break;
 
 		case 'm':
+			// m <start> <end>
 			break;
 
 		case 'r':
@@ -97,16 +99,13 @@ int main(int argc, char* argv[]) {
 			printf("Bye!");
 			return 0;
 			break;
-
 		}
+		//sr명령어
+		//sm명령어
+
 		getchar();
-		//버퍼헤결
+		//엔터 버퍼 비우기
 	}
-
-
-
-
-
 
 
 	free(REGISTER);
