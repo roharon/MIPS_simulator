@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 #pragma once
+// 레지스터 저장공간
+
+
 
 #pragma warning(disable: 4996)
 
@@ -27,6 +29,7 @@ unsigned int REG(unsigned int A, unsigned int V, unsigned int nRW);
 void showRegister(void);
 // REG.h
 void setPC(unsigned int val);
+int getPC();
 
 #define M_SIZE 9999
 #define EQUAL(cmd, value) (strcmp(cmd,value)==0)

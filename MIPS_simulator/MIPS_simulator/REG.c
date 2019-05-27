@@ -1,7 +1,8 @@
 #include "MIPS.h"
 
-extern int* REGISTER;
-extern int PC;
+int* REGISTER;
+int PC = 0x400000;
+int SP = 0x80000000;
 
 void setPC(unsigned int);
 
@@ -37,4 +38,8 @@ void showRegister(void) {
 void setPC(unsigned int val) {
 	PC = val;
 	return;
+}
+
+int getPC() {
+	return PC;
 }

@@ -9,10 +9,8 @@
 // MEM함수 호출하면 주소변환 통해 각 메모리 접근
 // 읽기에는 V 의미없고 반환값 받음
 // 쓰기에는 반환값이 의미없다
-extern char* progMEM;
-extern char* dataMEM;
-extern char* stackMEM;
 
+unsigned char progMEM[0x100000], dataMEM[0x100000], stackMEM[0x100000];
 
 unsigned int MEM(unsigned int A, int V, int nRW, int S) {
 	unsigned int sel, offset;

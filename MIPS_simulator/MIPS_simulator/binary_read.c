@@ -19,6 +19,45 @@ lw $4, 0($29)
 11101 //  29 -rs
 00100 // 4 - rt
 0000000000000000‬ // 0
+
+ sll $2, $4, 2
+‭000000
+00000
+00100
+0001000010
+000000‬
+
+addi $29, $29, -4
+‭001000 // addi
+11101  // 29
+11101  // 29
+1111
+1111
+1111
+1100‬
+
+addiu $6, $5, 4
+001001 // addiu
+00101 // 5
+00110 // 6
+0000 0000 0000 0100 // 4
+
+
+sw ＄t1, 32(＄t2)
+101011	01010	01001	0000 0000 0010 0000
+
+sub  ＄v1, ＄v1, ＄v0
+opcode	rs	rt	rd	shamt	funct
+000000	00011	00010	00011	00000	100010
+
+lw  ＄v0, 4(＄at)
+opcode	rs	rt	immediate
+100011	00001	00010	0000 0000 0000 0100
+
+000000
+00110
+01111
+1101000001001000
 */
 
 
@@ -42,17 +81,38 @@ int bin_read()
 	char temp[40] = "";
 	char temp2[40] = "";
 	char funct[40] = "";
+	char FULL[40] = "";
+
+	char get_string[3] = "";
 
 	while (1 == fread(&MEM[count], 1, 1, pFile)) {
 		IR = MEM[count];
+		printf("count : %d    ", count);
+		printf("Hexa : %x\n", MEM[count]);
+
+		if ((count % 4 == 0) && (count >= 8)) {
+			//코드 hexa 4개 합쳐질때
+			for (int i = count; i >= count - 3; i--) {
+				strcpy(get_string, MEM[count]);
+
+			}
+			//
+			
+
+		}
+		if (count)
+
 		if ((count + 1) == 8) {
-			printf("Number of Instructions: %d, Number of Data: %d\n", MEM[3], MEM[7]);
+			//printf("Number of Instructions: %d, Number of Data: %d\n", MEM[3], MEM[7]);
 		}
 		else if ((count + 1) % 4 == 0 && (count + 1) > 8) {
 			if (count > (8 + MEM[3] * 4))
 				break;
 			itoa(MEM[count - 3], opt, 2);
 
+			//itoa(MEM[count], FULL, 2);
+			//printf("%s\n", FULL);
+			//printf("%c\n", MEM[count-3]);
 
 			strcpy(temp, opt);
 			strcpy(opt, "");
@@ -61,6 +121,7 @@ int bin_read()
 				//이 부분에서 opt가 8개로 되도록
 
 			}
+
 			strcat(opt, temp);
 
 			itoa(MEM[count], funct, 2);
@@ -74,6 +135,7 @@ int bin_read()
 			ops_Inst(opt, funct);
 		}
 		count++;
+		
 	}
 
 	fclose(pFile);
@@ -86,7 +148,7 @@ void ops_Inst(char Opt[], char Funct[])
 	int opt_Hex = 0, funct_Hex = 0;
 	char inst_enc[10] = "";
 	//inst_enc : Instruction Encoding 명령어
-
+	//printf("%s\n", Opt);
 	Opt[6] = '\0';
 	strcpy(Funct, &Funct[2]);
 	Funct[6] = '\0';
@@ -118,6 +180,8 @@ const char* Inst_Enc(char enc_target[], char f_val[]) {
 			return "jr";
 		else if EQUAL(f_val, "001100")
 			return "syscall";
+		else if EQUAL(f_val, "001001")
+			return "addiu";
 		else if EQUAL(f_val, "010000")
 			return "mfhi";
 		else if EQUAL(f_val, "010010")
