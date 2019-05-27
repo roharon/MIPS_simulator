@@ -60,6 +60,7 @@ opcode	rs	rt	immediate
 1101000001001000
 */
 
+extern int PC;
 
 int bin_read()
 {
@@ -73,69 +74,120 @@ int bin_read()
 	err = fopen_s(&pFile, PATH, "rb");
 	if (err) {
 		printf("Cannot open file\n");
-		return 1;
+		return 400;
 	}
-
 
 	char opt[40] = "";
 	char temp[40] = "";
 	char temp2[40] = "";
 	char funct[40] = "";
-	char FULL[40] = "";
 
-	char get_string[3] = "";
+	unsigned char var_temp;
+	
+	unsigned char rs[40] = "";
+	unsigned char rt[40] = "";
+	unsigned char rd[40] = "";
+	unsigned char sh[40] = "";
+	unsigned char operand[40] = "";
+	unsigned char jump_target_address[40] = "";
+	
 
 	while (1 == fread(&MEM[count], 1, 1, pFile)) {
+		PC += 4;
 		IR = MEM[count];
-		printf("count : %d    ", count);
-		printf("Hexa : %x\n", MEM[count]);
 
-		if ((count % 4 == 0) && (count >= 8)) {
-			//코드 hexa 4개 합쳐질때
-			for (int i = count; i >= count - 3; i--) {
-				strcpy(get_string, MEM[count]);
+		if (((count + 1) % 4 == 0) && (count + 1 > 8)) {
+			printf("=-=-=-=-= count : %d   Hexa : %x =-=-=-=-=-=-=-=\n", count, MEM[count]);
+			//   00 11 01. 00 00 0.0 00 00.
+			//	 00 11 01. 00 00 0.0 00 00.
+			//itoa(MEM[count - 12], opt, 16);
 
-			}
-			//
-			
+			//printf("opt ->> %s\n", opt);
 
-		}
-		if (count)
 
-		if ((count + 1) == 8) {
-			//printf("Number of Instructions: %d, Number of Data: %d\n", MEM[3], MEM[7]);
-		}
-		else if ((count + 1) % 4 == 0 && (count + 1) > 8) {
-			if (count > (8 + MEM[3] * 4))
-				break;
-			itoa(MEM[count - 3], opt, 2);
-
-			//itoa(MEM[count], FULL, 2);
-			//printf("%s\n", FULL);
-			//printf("%c\n", MEM[count-3]);
-
-			strcpy(temp, opt);
+			strcpy(rs, "");
 			strcpy(opt, "");
-			for (int i = 0; i < 8 - strlen(temp); i++) {
-				strcat(opt, "0");
-				//이 부분에서 opt가 8개로 되도록
+			strcpy(temp, "");
 
+			for (int q = count - 3; q <= count; q++) {
+				// hexa로 바꿔서 rs에 00000000 형식 한줄 저장함
+				itoa(MEM[q], opt, 2);
+				for (int ind = strlen(opt); ind < 8; ind++) {
+					strcpy(temp, opt);
+					strcpy(opt, "0");
+					strcat(opt, temp);
+				}
+
+				strcat(rs, opt);
 			}
 
-			strcat(opt, temp);
 
-			itoa(MEM[count], funct, 2);
+			////printf("oneline-bin : %s    ", rs);
+			/*
+			2진만 나타내면 되기에 주석처리함 16진수로 한줄 표현 하는 것. - 00 00 00 00
+			for (int q = count - 9; q <= count - 6; q++) {
+				// hexa로 바꿔서 rs에 00000000 형식 한줄 저장함
+				itoa(MEM[q], opt, 16);
+				for (int ind = strlen(opt); ind < 2; ind++) {
+					strcpy(temp, opt);
+					strcpy(opt, "0");
+					strcat(opt, temp);
+				}
 
-			strcpy(temp, funct);
-			strcpy(funct, "");
-			for (int i = 0; i < 8 - strlen(temp); i++) {
-				strcat(funct, "0");
+				strcat(rs, opt);
 			}
-			strcat(funct, temp);
+
+
+			printf("oneline-hex : %s\n", rs);
+			*/
+
+			//itoa(MEM[count - 9], opt, 16); 00 00 00 00의 첫번째
+			//itoa(MEM[count - 12], opt, 16); 00 00 00 00의 두번째
+
+			//printf("레지스터 체크 count : %d  opt : %s \n", count, opt);
+
+
+			strcpy(opt, rs);
+			opt[6] = '\0';
+
+			strcpy(rt, rs + 11);
+			rt[5] = '\0';
+			//rt값
+
+
+
+			strcpy(rd, rs + 16);
+			rd[5] = '\0';
+
+			strcpy(sh, rs + 21);
+			sh[5] = '\0';
+
+			strcpy(funct, rs + 26);
+			funct[6] = '\0';
+
+			strcpy(operand, rs + 16);
+			operand[16] = '\0';
+
+			strcpy(jump_target_address, rs + 6);
+			jump_target_address[26] = '\0';
+
+			strcpy(rs, rs + 6);
+			rs[5] = '\0';
+			// rs에 모두 저장해서 나누는 것이므로 rs는 맨 마지막에 처리해야함.
+
+			printf("opt is %s rs is %s rt is %s rd is %s fn is %s\n", opt, rs, rt, rd, funct);
+			
 			ops_Inst(opt, funct);
 		}
+
+		//printf("opt is %s rs is %s rt is %s rd is %s fn is %s\n", opt, rs, rt, rd, funct);
+
+		/*
+		if ((count + 1) == 8) {
+			printf("Number of Instructions: %d, Number of Data: %d\n", MEM[3], MEM[7]);
+		}
+		*/
 		count++;
-		
 	}
 
 	fclose(pFile);
@@ -147,12 +199,7 @@ void ops_Inst(char Opt[], char Funct[])
 {
 	int opt_Hex = 0, funct_Hex = 0;
 	char inst_enc[10] = "";
-	//inst_enc : Instruction Encoding 명령어
-	//printf("%s\n", Opt);
-	Opt[6] = '\0';
-	strcpy(Funct, &Funct[2]);
-	Funct[6] = '\0';
-	//각각 6비트씩만 설정함
+
 
 	char* pos = NULL;
 

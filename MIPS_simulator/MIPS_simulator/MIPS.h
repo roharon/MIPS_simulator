@@ -17,7 +17,7 @@ int checkSetLess(int X, int Y);
 // ALU.h
 void step(void);
 
-int bin_read(void);
+int bin_read();
 void ops_Inst(char Opt[], char Funct[]);
 const char* Inst_Enc(char enc_target[], char f_val[]);
 // a.h

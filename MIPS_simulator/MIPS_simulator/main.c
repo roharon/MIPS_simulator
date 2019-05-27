@@ -25,7 +25,7 @@ $sp 29
 $fp 30
 $ra 31
 */
-
+extern char PATH[];
 extern int* REGISTER;
 extern int PC;
 extern int SP;
@@ -33,44 +33,60 @@ char cmd[50] = "";
 char user_cmd = ' ';
 
 int main(int argc, char* argv[]) {
-	bin_read();
-	FILE *fpointer;
+	//bin_read();
+	FILE *fpointer = NULL;
 	REGISTER = (int*)calloc(32, sizeof(int));
-
+	errno_t err = 0;
+	int target_address = 0;
 	while (1) {
+		printf("enter the command : ");
 		scanf("%[^\n]", cmd);
 		user_cmd = cmd[0];
 
 		switch (user_cmd) {
+
+		case '-':
+			bin_read();
+			break;
+
 		case 'l':
-			if (argc == 1)
-				fpointer = fopen("C:/roharon98/HUFS/Computer_structure/report3/machine_example/as_ex04_fct.bin", "r");
-			else
-				fpointer = fopen(argv[1], "r");
+			printf("enter the File Name : ");
+			scanf("%s", cmd);
 			
-			if (fpointer == NULL) {
-				printf("Error opening file");
+			//result_temp = bin_read(cmd);
+			err = fopen_s(&fpointer, cmd, "rb");
+			if (err) {
+				printf("\n==CAN NOT OPEN FILE ==\nfile name = %s\n", cmd);
+				break;
 			}
 
+			strcpy(PATH, cmd);
+			
 			PC = 0x400000;
 			setPC(0x400000);
-
-			// ! 시뮬레이터 메모리에 올리기 !
-			// l할떄는 bin을 받아야함.
-			// 그럼 어셈블리로 바꾸고 같이 처리할까
-
+			//fpointer = fopen("C:/roharon98/HUFS/Computer_structure/report3/machine_example/as_ex04_fct.bin", "r");
 			break;
+
 		case 'j':
+			scanf("%x", &target_address);
+			if (fpointer != NULL)
+				bin_read(fpointer, target_address, 1);
 			break;
+
 		case 'g':
 			break;
+
 		case 's':
 			break;
+
 		case 'm':
 			break;
+
 		case 'r':
 			break;
+
 		case 'x':
+			printf("Bye!");
 			return 0;
 			break;
 
