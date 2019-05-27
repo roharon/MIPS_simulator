@@ -68,7 +68,7 @@ unsigned char sh[40] = "";
 unsigned char operand[40] = "";
 unsigned char jump_target_address[40] = "";
 
-int bin_read()
+int bin_read(int step)
 {
 	unsigned char MEM[M_SIZE];
 	FILE *pFile = NULL;
@@ -209,10 +209,11 @@ void ops_Inst(char Opt[], char Funct[])
 	opt_Hex = strtol(Opt, &pos, 2);
 	funct_Hex = strtol(Funct, &pos, 2);
 
-	printf("Opc : %4x,  Fct : %4x, Inst : %s\n", opt_Hex, funct_Hex, Inst_Enc(Opt, Funct));
+	printf("Opc : %4x,  Fct : %4x, Inst : %s\n", opt_Hex, funct_Hex, Inst_ALU(Opt, Funct));
 }
 
-const char* Inst_Enc(char enc_target[], char f_val[]) {
+const char* Inst_ALU(char enc_target[], char f_val[]) {
+	// ALU 역할
 	// opcode의 6비트(2진수 형식으로 나타낸 문자열) 을 명령어로 나타내도록 구현
 	// strcmp 리턴값 equal: == 0 | unequal: != 0
 	// R_format일때(000000) 인코딩 2-0 5-3 구간 표대로 구현
@@ -220,30 +221,49 @@ const char* Inst_Enc(char enc_target[], char f_val[]) {
 	char result[10] = "";
 	if EQUAL(enc_target, "000000") {
 		//R-format
-		if EQUAL(f_val, "000000")
+		if EQUAL(f_val, "000000") {
+			REG(fromBinary(rs), (REG(fromBinary(rt), 0, 0) >> fromBinary(operand)), 1);
 			return "sll";
-		else if EQUAL(f_val, "000010")
+		}
+		else if EQUAL(f_val, "000010") {
+			REG(fromBinary(rs), (REG(fromBinary(rt), 0, 0) >> fromBinary(operand)), 1);
 			return "srl";
+		}
 		else if EQUAL(f_val, "000011")
 			return "sra";
-		else if EQUAL(f_val, "001000")
+		else if EQUAL(f_val, "001000") {
+			setPC(REG(ra,0,0));
 			return "jr";
+
+		}
 		else if EQUAL(f_val, "001100")
 			return "syscall";
-		else if EQUAL(f_val, "001001")
+		else if EQUAL(f_val, "001001") {
+			REG(fromBinary(rs), (REG(fromBinary(rt), 0, 0) + fromBinary(operand)), 1);
 			return "addiu";
+		}
 		else if EQUAL(f_val, "010000")
 			return "mfhi";
 		else if EQUAL(f_val, "010010")
 			return "mflo";
-		else if EQUAL(f_val, "011000")
+		else if EQUAL(f_val, "011000") {
+			REG(fromBinary(rd), (REG(fromBinary(rs), 0, 0) * (REG(fromBinary(rt), 0, 0)), 1), 1);
 			return "mul";
-		else if EQUAL(f_val, "100000")
+
+		}
+		else if EQUAL(f_val, "100000") {
+			REG(fromBinary(rd), (REG(fromBinary(rs), 0, 0) + (REG(fromBinary(rt), 0, 0)), 1), 1);
 			return "add";
-		else if EQUAL(f_val, "100010")
+		}
+		else if EQUAL(f_val, "100010") {
+			REG(fromBinary(rd), (REG(fromBinary(rs), 0, 0) - (REG(fromBinary(rt), 0, 0)), 1), 1);
 			return "sub";
-		else if EQUAL(f_val, "100100")
+		}
+		else if EQUAL(f_val, "100100") {
+			REG(fromBinary(rd), (REG(fromBinary(rs), 0, 0) & (REG(fromBinary(rt), 0, 0)), 1), 1);
 			return "and";
+		}
+			
 		else if EQUAL(f_val, "100101")
 			return "or";
 		else if EQUAL(f_val, "100110")
@@ -261,30 +281,70 @@ const char* Inst_Enc(char enc_target[], char f_val[]) {
 		return "jal";
 	else if EQUAL(enc_target, "000100")
 		return "beq";
-	else if EQUAL(enc_target, "000101")
-		return "bne";
-	else if EQUAL(enc_target, "001000")
+	else if EQUAL(enc_target, "000101") {
+		if (fromBinary(rs) != fromBinary(rt)) {
+			fromBinary(jump_target_address);
+			// 구현 미완료
+			return "bne";
+		}
+		
+	}
+	else if EQUAL(enc_target, "001000") {
+		REG(fromBinary(rs), (REG(fromBinary(rt), 0, 0) + fromBinary(operand)), 1);
 		return "addi";
-	else if EQUAL(enc_target, "001010")
+	}
+	else if EQUAL(enc_target, "001010") {
+		if (fromBinary(operand) > fromBinary(rt))
+			REG(fromBinary(rs), 1, 1);
+		//작으면 1로 세팅
+		else
+			REG(fromBinary(rs), 0, 1);
+		//크면 0으로 세팅
 		return "slti";
-	else if EQUAL(enc_target, "001100")
+	}
+	else if EQUAL(enc_target, "001100") {
+		REG(fromBinary(rs), (REG(fromBinary(rt), 0, 0) & fromBinary(operand)), 1);
 		return "andi";
-	else if EQUAL(enc_target, "001101")
+	}
+
+	else if EQUAL(enc_target, "001101") {
+		REG(fromBinary(rs), (REG(fromBinary(rt), 0, 0) | fromBinary(operand)), 1);
 		return "ori";
-	else if EQUAL(enc_target, "001110")
+	}
+	else if EQUAL(enc_target, "001110") {
+		REG(fromBinary(rs), (REG(fromBinary(rt), 0, 0) ^ fromBinary(operand)), 1);
 		return "xori";
-	else if EQUAL(enc_target, "001111")
+	}
+	else if EQUAL(enc_target, "001111") {
+		REG(fromBinary(rs), ((2<<16) * fromBinary(operand)), 1);
 		return "lui";
-	else if EQUAL(enc_target, "100000")
+	}
+	else if EQUAL(enc_target, "100000") {
+		char a[] = "";
+		*a = REG(fromBinary(rs), 0, 0);
+		REG(fromBinary(rt), a[fromBinary(operand)], 1);
 		return "lb";
-	else if EQUAL(enc_target, "100011")
+	}
+	else if EQUAL(enc_target, "100011") {
+		char a[] = "";
+		*a = REG(fromBinary(rs), 0, 0);
+		REG(fromBinary(rt), a[fromBinary(operand)], 1);
 		return "lw";
-	else if EQUAL(enc_target, "100100")
+	}
+	else if EQUAL(enc_target, "100100") {
+		char a[] = "";
+		*a = REG(fromBinary(rs), 0, 0);
+		REG(fromBinary(rt), a[fromBinary(operand)], 1);
 		return "lbu";
+	}
 	else if EQUAL(enc_target, "101000")
 		return "sb";
-	else if EQUAL(enc_target, "101011")
+	else if EQUAL(enc_target, "101011") {
+		char a[] = "";
+		*a = REG(fromBinary(rs), 0, 0);
+		REG(fromBinary(rt), a[fromBinary(operand)], 1);
 		return "sw";
+	}
 	else
 		return "\n===ERROR (nearby EQUAL) ===\n";
 }

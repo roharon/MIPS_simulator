@@ -19,7 +19,7 @@ void step(void);
 
 int bin_read();
 void ops_Inst(char Opt[], char Funct[]);
-const char* Inst_Enc(char enc_target[], char f_val[]);
+const char* Inst_ALU(char enc_target[], char f_val[]);
 // a.h
 
 unsigned int MEM(unsigned int A, int V, int nRW, int s);
@@ -32,6 +32,7 @@ void setPC(unsigned int val);
 int getPC();
 
 int fromBinary(const char*);
+int fromBinary(char* s);
 
 #define M_SIZE 9999
 #define EQUAL(cmd, value) (strcmp(cmd,value)==0)

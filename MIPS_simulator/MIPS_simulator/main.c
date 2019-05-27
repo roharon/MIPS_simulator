@@ -25,6 +25,7 @@ $sp 29
 $fp 30
 $ra 31
 */
+extern stackMEM;
 extern char PATH[];
 extern int* REGISTER;
 extern int PC;
@@ -38,6 +39,10 @@ int main(int argc, char* argv[]) {
 	//bin_read();
 	FILE *fpointer = NULL;
 	REGISTER = (int*)calloc(32, sizeof(int));
+	printf("%d", REG(0, 0, 0));
+	REGISTER[sp] = stackMEM;
+	// sp레지스터 stackMEM에 연결
+
 	errno_t err = 0;
 	int target_address = 0;
 	while (1) {
@@ -85,6 +90,7 @@ int main(int argc, char* argv[]) {
 			break;
 
 		case 'r':
+			showRegister();
 			break;
 
 		case 'x':

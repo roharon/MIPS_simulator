@@ -10,7 +10,6 @@ unsigned int REG(unsigned int A, unsigned int V, unsigned int nRW) {
 	// A : memory address
 	// V: write value
 	// nRW: 0-> Read, 1-> Write
-	//S(Size): 0-> Byte, 1-> Half word, 2-> Word
 
 	if (nRW == 0) {
 		//read
@@ -28,10 +27,12 @@ unsigned int REG(unsigned int A, unsigned int V, unsigned int nRW) {
 }
 
 void showRegister(void) {
-	printf("[REGISTER]\n");
+	// ¸í·É¾î r
+	printf("-------------[REGISTER]-------------\n");
 
 	for (int i = 0; i < REG_SIZE; i++) {
-		printf("R%d = %d", i, REGISTER[i]);
+		//printf("R%d = %d", i, REGISTER[i]);
+		printf("R%d = %d\n", i, REG(i, 0, 0));
 	}
 }
 
