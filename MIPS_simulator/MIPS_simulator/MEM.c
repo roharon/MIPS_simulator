@@ -13,12 +13,16 @@
 unsigned char progMEM[0x100000], dataMEM[0x100000], stackMEM[0x100000];
 
 unsigned int MEM(unsigned int A, int V, int nRW, int S) {
+	// S : 0 byte | S : 1 half word | S : 2 word
+	// nRW : 0 -> Read, 1 -> Write
+
 	unsigned int sel, offset;
 	unsigned char *pM;
 	sel = A >> 20;    offset = A & 0xFFFFF;
+	// 메모리 주소 크기에 따라 접근하는 MEM을 변경시킨다
 	if (sel == 0x004) pM = progMEM;         // program memory
 	else if (sel == 0x100) pM = dataMEM;  // data memory
-	else if (sel == 0x7FF) pM = stackMEM;  // stack
+	else if (sel == 0x800) pM = stackMEM;  // stack
 	else {
 		printf("No memory\n");
 		return 1;
@@ -82,7 +86,7 @@ Word : 4byte, halfword : 2byte, byte : 1byte
 
 /*
 int main() {
-	MEM(0x7FF11110, 5, 1, 0);
+	MEM(0x00411110, 5, 1, 0);
 	// 0x00411110 에 값 5을 Write. Size는 Word(4bytes)
 
 	int result = MEM(0x7FF11110, 3, 0, 0);

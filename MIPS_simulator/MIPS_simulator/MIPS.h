@@ -61,7 +61,7 @@
 
 
 // ALU.c
-int ALU(int X, int Y, int C);
+int ALU(int C, int X, int Y);
 int logicOperation(int X, int Y, int C);
 int addSubtract(int X, int Y, int C);
 int shiftOperation(int V, int Y, int C);
@@ -71,6 +71,7 @@ int checkSetLess(int X, int Y);
 
 // binary_convert.c
 int fromBinary(const char*);
+char* toBinary(int val);
 // binary_convert.c prototype
 
 // MEM.c
@@ -82,8 +83,19 @@ unsigned int REG(unsigned int A, unsigned int V, unsigned int nRW);
 void showRegister(void);
 void setPC(unsigned int val);
 int getPC();
+
+int getOp(int);
+int getFn(int);
+int getRs(int);
+int getRt(int);
+int getRd(int IR);
+int getOffset(int IR);
 // REG.c prototype
 
 // step.c
 void step(void);
 // step.c prototype
+
+//loadToMemory.c
+int LoadBin(char* PATH);
+// loadToMemory.c prototype

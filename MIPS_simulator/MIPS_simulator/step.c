@@ -13,13 +13,13 @@ void step(void) {
 
 	int op = getOp(IR);
 
+	int fn = getFn(IR);
+	int rs = getRs(IR);
+	int rt = getRt(IR);
+	int rd = getRd(IR);
+
 	if (op == 0) {
 		// opcode 000000 - R-format
-		int fn = getFn(IR);
-		int rs = getRs(IR);
-		int rt = getRt(IR);
-		int rd = getRd(IR);
-
 		if (fn == 32) {
 			REGISTER[rd] = ALU(ADD, REGISTER[rs], REGISTER[rt]);
 		}
@@ -55,11 +55,8 @@ void step(void) {
 		}
 	}
 	else {
-		int fn = getFn(IR);
-		int rs = getRs(IR);
-		int rt = getRt(IR);
-		int rd = getRd(IR);
-		int operand = getOperand(IR); //I-type operand
+		
+		int operand = getOffset(IR); //I-type operand
 		int jta = getJta(IR); //J-type jump target address
 
 		if (op == 1) {
@@ -78,70 +75,70 @@ void step(void) {
 		}
 		else if (op == 4) {
 			//beq
-			if (getRs() == getRt()) {
+			if (getRs(IR) == getRt(IR)) {
 				offset = getOffset(IR);
 			}
 		}
 		else if (op == 5) {
 			//bne
-			if (getRs() != getRt()) {
+			if (getRs(IR) != getRt(IR)) {
 				offset = getOffset(IR);
 			}
 		}
 		else if (op == 8) {
 			//addi
-			REGISTER[rd] = REGISTER[rs] + getOperand();
+			REGISTER[rd] = REGISTER[rs] + getOffset(IR);
 		}
 		else if (op == 10) {
 			//slti
-			REGISTER[rt] = (getRs() < getOperand());
+			REGISTER[rt] = (getRs(IR) < getOffset(IR));
 		}
 		else if (op == 12) {
 			//andi
-			REGISTER[rt] = getRs() & getOperand();
+			REGISTER[rt] = getRs(IR) & getOffset(IR);
 		}
 		else if (op == 13) {
 			//ori
-			REGISTER[rt] = getRs() | getOperand();
+			REGISTER[rt] = getRs(IR) | getOffset(IR);
 		}
 		else if (op == 14) {
 			//xori
-			REGISTER[rt] = getRs() ^ getOperand();
+			REGISTER[rt] = getRs(IR) ^ getOffset(IR);
 		}
 		else if (op == 15) {
 			//lui
 			// TODO rechange to for MEM
-			REGISTER[rt] = getOperand();
+			REGISTER[rt] = getOffset(IR);
 			// *(mem+( *(regs+rs)+offset) ) = *(regs+rt);
 		}
 		else if (op == 32) {
 			//lb
 			//MEM
-			REGISTER[rt] = getRs() + getOperand();
+			REGISTER[rt] = getRs(IR) + getOffset(IR);
 			// *(mem+( *(regs+rs)+offset) ) = *(regs+rt);
 		}
 		else if (op == 35) {
 			//lw
 			//MEM
-			REGISTER[rt] = getRs() + getOperand();
+			REGISTER[rt] = getRs(IR) + getOffset(IR);
 			//*(regs+rt) = *(mem+( *(regs+rs)+offset) );
 		}
 		else if (op == 36) {
 			//lbu
 			// MEM
-			REGISTER[rt] = getRs() + getOperand();
+			REGISTER[rt] = getRs(IR) + getOffset(IR);
 			// *(mem+( *(regs+rs)+offset) ) = *(regs+rt);
 		}
 		else if (op == 40) {
 			//sb
 			// MEM
-			REGISTER[rt] = getRs() + getOperand();
+			REGISTER[rt] = getRs(IR) + getOffset(IR);
 			// *(mem+( *(regs+rs)+offset) ) = *(regs+rt);
 		}
 		else if (op == 43) {
 			//sw
 			//MEM
-			REGISTER[rt] = getRs() + getOperand();
+			REGISTER[rt] = getRs(IR) + getOffset(IR);
 			//*(mem + (*(regs + rs) + offset)) = *(regs + rt);
 		}
 	}

@@ -1,19 +1,6 @@
 #include "MIPS.h"
 
 /*
-Program counter는 동일하게 구현
-
-MIPS명령어
-add $t0, $t0, $t2
-
-하면 결과 나오게
-
-레지스터 공간 구현해야한다.
-
-ALU
-*/
-
-/*
 $zero  0
 $v0~$v1 2~3
 $a0~$a3 4~7
@@ -38,7 +25,6 @@ char* result;
 char user_cmd = ' ';
 
 int main(int argc, char* argv[]) {
-	FILE *fpointer = NULL;
 	REGISTER = (int*)calloc(32, sizeof(int));
 	REGISTER[sp] = stackMEM;
 	// sp레지스터 stackMEM에 연결
@@ -46,7 +32,6 @@ int main(int argc, char* argv[]) {
 	char var1[10] = "";
 	char var2[10] = "";
 
-	errno_t err = 0;
 	while (1) {
 		printf("enter the command : ");
 		scanf("%[^\n]", cmd);
@@ -56,22 +41,25 @@ int main(int argc, char* argv[]) {
 		switch (user_cmd) {
 
 		case '-':
-			bin_read(0,0);
+			printf("%x\n", MEM(0x00400000, 1, 0, 2));
+			printf("%x\n", MEM(0x00400000 + 4, 1, 0, 2));
+			printf("%x\n", MEM(0x00400000 + 8, 1, 0, 2));
+			printf("%x\n", MEM(0x00400000 + 12, 1, 0, 2));
+			// 테스트용
 			break;
 
 		case 'l':
 			printf("enter the File Name : ");
 			scanf("%s", cmd);
-			
+			// TODO 메모리에 올리기
+
 			//result_temp = bin_read(cmd);
-			err = fopen_s(&fpointer, cmd, "rb");
-			if (err) {
-				printf("\n==CAN NOT OPEN FILE ==\nfile name = %s\n", cmd);
-				break;
+
+			result = LoadBin(cmd);
+			if (result == 500) {
+				
 			}
-			strcpy(PATH, cmd);
-			PC = 0x400000;
-			setPC(0x400000);
+
 			break;
 
 		case 'j':			
@@ -79,12 +67,10 @@ int main(int argc, char* argv[]) {
 			break;
 
 		case 'g':
-			bin_read(0, 0);
 			// 현재 PC위치에서 시뮬레이터가 명령어 끝까지 처리
 			break;
 
 		case 's':
-			bin_read(1, 0);
 			break;
 
 		case 'm':

@@ -44,3 +44,33 @@ void setPC(unsigned int val) {
 int getPC() {
 	return PC;
 }
+
+int getOp(int IR) {
+	printf("IR is : %x\n", IR);
+	//printf("Op is : %x\n", IR);
+	return IR;
+}
+
+int getFn(int IR) {
+
+}
+
+int getRs(int IR) {
+
+}
+
+int getRt(int IR) {
+
+}
+
+int getRd(int IR) {
+
+}
+
+int getOffset(int IR) {
+
+}
+
+int getJta(int IR) {
+
+}
