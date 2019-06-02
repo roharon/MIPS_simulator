@@ -1,9 +1,12 @@
+#include <stdio.h>
 #include "MIPS.h"
 
-int ALU(int X, int Y, int C, int *Z) {
+int ALU(int C, int X, int Y) {
+	// C : opcode | X : 피연산1 | Y : 피연산2
+	// 계산된 값을 반환한다.
+
 	int c32, c10;
 	int ret;
-	char cmd[20] = "";
 
 	c32 = (C >> 2) & 3;
 	c10 = C & 3;
@@ -14,8 +17,7 @@ int ALU(int X, int Y, int C, int *Z) {
 		ret = checkSetLess(X, Y);
 	}
 	else if (c32 == 2) {  // add | subtract
-		*Z = checkZero(c10 & 1);
-		ret = addSubtract(X, Y, *Z);
+		ret = addSubtract(X, Y, checkZero(c10 & 1));
 	}
 	else {
 		ret = logicOperation(X, Y, c10);
@@ -121,6 +123,15 @@ int checkSetLess(int X, int Y) {
 	return ret;
 }
 
-void step(void) {
+void test(void) {
+	int x, y, c, s, z;
 
+	x = 2;
+	y = 1;
+
+	printf("x: % 8x, y : % 8x\n", x, y);
+	for (int i = 0; i < 16; i++) {
+		s = ALU(x, y, i, &z);
+		printf("s: % 8x, z : % 8x\n", s, z);
+	}
 }

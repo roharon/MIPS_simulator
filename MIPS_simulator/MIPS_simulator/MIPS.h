@@ -2,37 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #pragma once
-// 레지스터 저장공간
-
-
-
 #pragma warning(disable: 4996)
-
-int ALU(int X, int Y, int C, int* Z);
-int logicOperation(int X, int Y, int C);
-int addSubtract(int X, int Y, int C);
-int shiftOperation(int V, int Y, int C);
-int checkZero(int S);
-int checkSetLess(int X, int Y);
-// ALU.h
-void step(void);
-
-int bin_read();
-void ops_Inst(char Opt[], char Funct[]);
-const char* Inst_ALU(char enc_target[], char f_val[]);
-// a.h
-
-unsigned int MEM(unsigned int A, int V, int nRW, int s);
-// MEM.h
-
-unsigned int REG(unsigned int A, unsigned int V, unsigned int nRW);
-void showRegister(void);
-// REG.h
-void setPC(unsigned int val);
-int getPC();
-
-int fromBinary(const char*);
-int fromBinary(char* s);
 
 #define M_SIZE 9999
 #define EQUAL(cmd, value) (strcmp(cmd,value)==0)
@@ -70,5 +40,50 @@ int fromBinary(char* s);
 #define fp 30
 #define ra 31
 
+// step.c instruction
+
+#define ADD 8
+#define SUB 9
+#define SLL 1
+#define SRL 2
+#define SRA 3
+#define SL 4
+#define NOSHIFT 0
+#define AND 12
+#define OR 13
+#define XOR 14
+#define NOR 15
 
 
+// Instruction Encoding의 R-format에서
+
+// end step.c instruction
+
+
+// ALU.c
+int ALU(int X, int Y, int C);
+int logicOperation(int X, int Y, int C);
+int addSubtract(int X, int Y, int C);
+int shiftOperation(int V, int Y, int C);
+int checkZero(int S);
+int checkSetLess(int X, int Y);
+// ALU.c prototype
+
+// binary_convert.c
+int fromBinary(const char*);
+// binary_convert.c prototype
+
+// MEM.c
+unsigned int MEM(unsigned int A, int V, int nRW, int S);
+// MEM.c prototype
+
+// REG.c
+unsigned int REG(unsigned int A, unsigned int V, unsigned int nRW);
+void showRegister(void);
+void setPC(unsigned int val);
+int getPC();
+// REG.c prototype
+
+// step.c
+void step(void);
+// step.c prototype
