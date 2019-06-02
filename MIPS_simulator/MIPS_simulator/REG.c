@@ -46,31 +46,57 @@ int getPC() {
 }
 
 int getOp(int IR) {
-	printf("IR is : %x\n", IR);
-	//printf("Op is : %x\n", IR);
-	return IR;
+	char get_result[20] = "";
+	*get_result = toBinary(IR);	
+	*get_result = substr(get_result, 0, 6);
+
+	return fromBinary(get_result);
 }
 
 int getFn(int IR) {
+	char get_result[20] = "";
+	*get_result = toBinary(IR);
+	*get_result = substr(get_result, 26, 6);
 
+	return fromBinary(get_result);
 }
 
 int getRs(int IR) {
+	char get_result[20] = "";
+	*get_result = toBinary(IR);
+	*get_result = substr(get_result, 6, 5);
 
+	return fromBinary(get_result);
 }
 
 int getRt(int IR) {
+	char get_result[20] = "";
+	*get_result = toBinary(IR);
+	*get_result = substr(get_result, 11, 5);
 
+	return fromBinary(get_result);
 }
 
 int getRd(int IR) {
+	char get_result[20] = "";
+	*get_result = toBinary(IR);
+	*get_result = substr(get_result, 16, 5);
 
+	return fromBinary(get_result);
 }
 
 int getOffset(int IR) {
+	char get_result[20] = "";
+	*get_result = toBinary(IR);
+	*get_result = substr(get_result, 16, 16);
 
+	return fromBinary(get_result);
 }
 
 int getJta(int IR) {
+	char get_result[20] = "";
+	*get_result = toBinary(IR);
+	*get_result = substr(get_result, 6, 26);
 
+	return fromBinary(get_result);
 }

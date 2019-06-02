@@ -10,6 +10,7 @@ void step(void) {
 	int IR = MEM(PC, 0, 0, 2);
 	int offset;
 	PC += 4;
+	printf("pc is --> %x\n", PC);
 
 	int op = getOp(IR);
 

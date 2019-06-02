@@ -23,6 +23,10 @@ int LoadBin(char* PATH) {
 	}
 	printf("read works\n");
 
+	// set PC
+
+	setPC(0x400000);
+
 	while(1 == fread(&data, 1, 1, fpointer)) {
 		/*
 		if ((ind % 4 == 0) && (ind >= 4))

@@ -90,6 +90,7 @@ int getRs(int);
 int getRt(int);
 int getRd(int IR);
 int getOffset(int IR);
+int getJta(int);
 // REG.c prototype
 
 // step.c
@@ -99,3 +100,7 @@ void step(void);
 //loadToMemory.c
 int LoadBin(char* PATH);
 // loadToMemory.c prototype
+
+// substring.c
+char *substr(char *pnInput, int nStart, int nLen);
+// substring.c prototype

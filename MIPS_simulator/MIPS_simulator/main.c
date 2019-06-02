@@ -41,6 +41,7 @@ int main(int argc, char* argv[]) {
 		switch (user_cmd) {
 
 		case '-':
+			printf("pc : %x\n", getPC());
 			printf("%x\n", MEM(0x00400000, 1, 0, 2));
 			printf("%x\n", MEM(0x00400000 + 4, 1, 0, 2));
 			printf("%x\n", MEM(0x00400000 + 8, 1, 0, 2));
@@ -64,13 +65,17 @@ int main(int argc, char* argv[]) {
 
 		case 'j':			
 			scanf("%x", &target_address);
+			setPC(target_address);
 			break;
 
 		case 'g':
 			// 현재 PC위치에서 시뮬레이터가 명령어 끝까지 처리
+			// while(1) step(); 을 하며 step에서 5를 호출하면 종료하도록
+			// 그러기 위해선 step() 프로토타입을 바꿔야함
 			break;
 
 		case 's':
+			step();
 			break;
 
 		case 'm':
