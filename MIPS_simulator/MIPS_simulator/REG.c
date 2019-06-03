@@ -32,7 +32,7 @@ void showRegister(void) {
 
 	for (int i = 0; i < REG_SIZE; i++) {
 		//printf("R%d = %d", i, REGISTER[i]);
-		printf("R%d = %d\n", i, REG(i, 0, 0));
+		printf("R%d = %x\n", i, REG(i, 0, 0));
 	}
 }
 
@@ -46,57 +46,32 @@ int getPC() {
 }
 
 int getOp(int IR) {
-	char get_result[20] = "";
-	*get_result = toBinary(IR);	
-	*get_result = substr(get_result, 0, 6);
 
-	return fromBinary(get_result);
+	return fromBinary(substr(toBinary(IR), 0, 6));
 }
 
 int getFn(int IR) {
-	char get_result[20] = "";
-	*get_result = toBinary(IR);
-	*get_result = substr(get_result, 26, 6);
 
-	return fromBinary(get_result);
+	return fromBinary(substr(toBinary(IR), 26, 6));
 }
 
 int getRs(int IR) {
-	char get_result[20] = "";
-	*get_result = toBinary(IR);
-	*get_result = substr(get_result, 6, 5);
 
-	return fromBinary(get_result);
+	return fromBinary(substr(toBinary(IR), 6, 5));
 }
 
 int getRt(int IR) {
-	char get_result[20] = "";
-	*get_result = toBinary(IR);
-	*get_result = substr(get_result, 11, 5);
-
-	return fromBinary(get_result);
+	return fromBinary(substr(toBinary(IR), 11, 5));
 }
 
 int getRd(int IR) {
-	char get_result[20] = "";
-	*get_result = toBinary(IR);
-	*get_result = substr(get_result, 16, 5);
-
-	return fromBinary(get_result);
+	return fromBinary(substr(toBinary(IR), 16, 5));
 }
 
 int getOffset(int IR) {
-	char get_result[20] = "";
-	*get_result = toBinary(IR);
-	*get_result = substr(get_result, 16, 16);
-
-	return fromBinary(get_result);
+	return fromBinary(substr(toBinary(IR), 16, 16));
 }
 
 int getJta(int IR) {
-	char get_result[20] = "";
-	*get_result = toBinary(IR);
-	*get_result = substr(get_result, 6, 26);
-
-	return fromBinary(get_result);
+	return fromBinary(substr(toBinary(IR), 6, 26));
 }

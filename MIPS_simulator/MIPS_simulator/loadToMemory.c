@@ -19,13 +19,13 @@ int LoadBin(char* PATH) {
 	err = fopen_s(&fpointer, PATH, "rb");
 	if (err) {
 		printf("\n====== CAN NOT OPEN FILE =====\n%s \n", PATH);
-		return 500;
+		return 400;
 	}
 	printf("read works\n");
 
 	// set PC
 
-	setPC(0x400000);
+	setPC(0x00400000);
 
 	while(1 == fread(&data, 1, 1, fpointer)) {
 		/*
@@ -42,9 +42,10 @@ int LoadBin(char* PATH) {
 		*/
 		if (ind >= 8) {
 			MEM(0x00400000 + (ind-8), data, 1, 0);
-			printf("%x\n", data);
+			printf("\n%x and MEM is %x\n", data, MEM(0x00400000 + (ind - 8), data, 0, 0));
 			//binary에서 개수부분 빼고
 		}
+
 		// 인덱스 하나씩 저장
 
 		

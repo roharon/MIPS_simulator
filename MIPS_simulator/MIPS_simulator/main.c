@@ -33,6 +33,7 @@ int main(int argc, char* argv[]) {
 	char var2[10] = "";
 
 	while (1) {
+		printf("----------------------\n");
 		printf("enter the command : ");
 		scanf("%[^\n]", cmd);
 		fflush(stdin);
@@ -57,9 +58,6 @@ int main(int argc, char* argv[]) {
 			//result_temp = bin_read(cmd);
 
 			result = LoadBin(cmd);
-			if (result == 500) {
-				
-			}
 
 			break;
 
@@ -70,12 +68,16 @@ int main(int argc, char* argv[]) {
 
 		case 'g':
 			// 현재 PC위치에서 시뮬레이터가 명령어 끝까지 처리
-			// while(1) step(); 을 하며 step에서 5를 호출하면 종료하도록
+			// while(1) step(); 을 하며 step에서 500를 호출하면 종료하도록
 			// 그러기 위해선 step() 프로토타입을 바꿔야함
+			while (step() != 500);
+			// 500(systemcall 10)반환시 while 풀림
 			break;
 
 		case 's':
-			step();
+			if (step() == 500) {
+				printf("\n--- exit by systemcall 10 ---\n");
+			}
 			break;
 
 		case 'm':

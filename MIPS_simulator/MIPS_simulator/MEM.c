@@ -32,6 +32,7 @@ unsigned int MEM(unsigned int A, int V, int nRW, int S) {
 		if (nRW == 0) {
 			//read
 			V = *(pM + offset);
+			printf("\n V is %x\n", V);
 			return V;
 		}
 		else if (nRW == 1) {

@@ -94,7 +94,7 @@ int getJta(int);
 // REG.c prototype
 
 // step.c
-void step(void);
+int step(void);
 // step.c prototype
 
 //loadToMemory.c

@@ -4,13 +4,12 @@ extern int* REGISTER;
 extern int PC;
 // TODO IR와 PC extern
 // TODO getOp(IR) getFn(IR) getRs(IR) getRt(IR) getRd(IR) getOffset(IR)구현
-void step(void) {
+int step(void) {
 	//instruction fetch
 
 	int IR = MEM(PC, 0, 0, 2);
 	int offset;
-	PC += 4;
-	printf("pc is --> %x\n", PC);
+	
 
 	int op = getOp(IR);
 
@@ -18,7 +17,9 @@ void step(void) {
 	int rs = getRs(IR);
 	int rt = getRt(IR);
 	int rd = getRd(IR);
-
+	printf("PC : %x\n", PC);
+	printf("IR : %x\n", IR);
+	printf("op = %d fn = %d rs =%d\nrt = %d rd = %d\n", op, fn, rs, rt, rd);
 	if (op == 0) {
 		// opcode 000000 - R-format
 		if (fn == 32) {
@@ -50,6 +51,14 @@ void step(void) {
 		}
 		else if (fn == 39) {
 			REGISTER[rd] = ALU(NOR, REGISTER[rs], REGISTER[rt]);
+		}
+		else if (fn == 12) {
+			printf("\n\nsystemcall 10 호출 됩니다\n%d %d\n\n", REGISTER[rs], REGISTER[rt]);
+
+			if (REGISTER[rs] == 10) {
+				return 500;
+				// syscall 10일때 500 반환
+			}
 		}
 		else {
 			printf("Undefined Inst~");
@@ -110,17 +119,18 @@ void step(void) {
 			//lui
 			// TODO rechange to for MEM
 			REGISTER[rt] = getOffset(IR);
-			// *(mem+( *(regs+rs)+offset) ) = *(regs+rt);
+			//*(regs+rt) = *(mem+( *(regs+rs)+offset) );
 		}
 		else if (op == 32) {
 			//lb
 			//MEM
 			REGISTER[rt] = getRs(IR) + getOffset(IR);
-			// *(mem+( *(regs+rs)+offset) ) = *(regs+rt);
+			//*(regs+rt) = *(mem+( *(regs+rs)+offset) );
 		}
 		else if (op == 35) {
 			//lw
 			//MEM
+			//lw $t1, 10($s0)
 			REGISTER[rt] = getRs(IR) + getOffset(IR);
 			//*(regs+rt) = *(mem+( *(regs+rs)+offset) );
 		}
@@ -143,4 +153,6 @@ void step(void) {
 			//*(mem + (*(regs + rs) + offset)) = *(regs + rt);
 		}
 	}
+	PC += 4;
+	return 0;
 }
