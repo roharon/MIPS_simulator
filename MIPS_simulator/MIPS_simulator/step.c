@@ -24,6 +24,8 @@ int step(void) {
 		// opcode 000000 - R-format
 		if (fn == 32) {
 			REGISTER[rd] = ALU(ADD, REGISTER[rs], REGISTER[rt]);
+			printf("\nADD - 저장되는 rd : %d rs : %d + rt : %d\n", REGISTER[rd], REGISTER[rs], REGISTER[rt]);
+				
 		}
 		else if (fn == 34) {
 			REGISTER[rd] = ALU(SUB, REGISTER[rs], REGISTER[rt]);
@@ -53,9 +55,9 @@ int step(void) {
 			REGISTER[rd] = ALU(NOR, REGISTER[rs], REGISTER[rt]);
 		}
 		else if (fn == 12) {
-			printf("\n\nsystemcall 10 호출 됩니다\n%d %d\n\n", REGISTER[rs], REGISTER[rt]);
-
-			if (REGISTER[rs] == 10) {
+			if (REG(v0,0,0) == 10) {
+				printf("\n\nsystemcall 10 호출\n");
+				// v0 가 10일때 리턴하는 것
 				return 500;
 				// syscall 10일때 500 반환
 			}
@@ -67,89 +69,136 @@ int step(void) {
 	else {
 		
 		int operand = getOffset(IR); //I-type operand
+		offset = operand;
 		int jta = getJta(IR); //J-type jump target address
 
 		if (op == 1) {
 			// I-format. bltz
-			offset = getOffset(IR);
+			REG(ra, PC, 1);
 			PC = PC + 4 * offset;
 		}
 		else if (op == 2) {
 			// j-format. j
-			PC = getJta(IR);
+			PC = jta;
 		}
 		else if (op == 3) {
 			//jal
-			REGISTER[ra] = PC + 4;
-			PC = getJta(IR);
+			//REGISTER[ra] = PC + 4;
+			REG(ra, PC + 4, 1);
+			PC = jta;
 		}
 		else if (op == 4) {
 			//beq
-			if (getRs(IR) == getRt(IR)) {
-				offset = getOffset(IR);
+			if (rs == rt) {
+				REG(ra, PC, 1);
 			}
 		}
 		else if (op == 5) {
 			//bne
-			if (getRs(IR) != getRt(IR)) {
-				offset = getOffset(IR);
+			if (rs != rt) {
+				REG(ra, PC, 1);
 			}
 		}
 		else if (op == 8) {
 			//addi
-			REGISTER[rd] = REGISTER[rs] + getOffset(IR);
+			REG(rd, REG(rs,0,0) + operand, 1);
+			//REGISTER[rd] = REGISTER[rs] + getOffset(IR);
 		}
 		else if (op == 10) {
 			//slti
-			REGISTER[rt] = (getRs(IR) < getOffset(IR));
+			REG(rt, REG(rs,0,0) < operand, 1);
 		}
 		else if (op == 12) {
 			//andi
-			REGISTER[rt] = getRs(IR) & getOffset(IR);
+			REG(rt, REG(rs,0,0) & operand, 1);
+			//REGISTER[rt] = getRs(IR) & getOffset(IR);
 		}
 		else if (op == 13) {
 			//ori
-			REGISTER[rt] = getRs(IR) | getOffset(IR);
+			REG(rt, REG(rs,0,0) | operand, 1);
+			//REGISTER[rt] = getRs(IR) | getOffset(IR);
 		}
 		else if (op == 14) {
 			//xori
-			REGISTER[rt] = getRs(IR) ^ getOffset(IR);
+			REG(rt, REG(rs,0,0)^operand, 1);
+			//REGISTER[rt] = getRs(IR) ^ getOffset(IR);
 		}
 		else if (op == 15) {
 			//lui
 			// TODO rechange to for MEM
-			REGISTER[rt] = getOffset(IR);
+			// lw $16, 0($10)
+			// op = 35, fn = 0, rs = 10, rt = 16
+			if (rt == sp) {
+				REGISTER[rt] = MEM(0x80000000 + (fn * 4), 0, 0, 2);
+			}
+			else {
+				REGISTER[rt] = MEM(0x10000000 + (rt * 1000 + (fn * 4)), 0, 0, 2);
+			}
+			
 			//*(regs+rt) = *(mem+( *(regs+rs)+offset) );
 		}
 		else if (op == 32) {
 			//lb
 			//MEM
-			REGISTER[rt] = getRs(IR) + getOffset(IR);
-			//*(regs+rt) = *(mem+( *(regs+rs)+offset) );
+			if (rt == sp) {
+				REGISTER[rt] = MEM(0x80000000 + (fn * 4), 0, 0, 2);
+			}
+			else {
+				REGISTER[rt] = MEM(0x10000000 + (rt * 1000 + (fn * 4)), 0, 0, 2);
+			}
 		}
 		else if (op == 35) {
 			//lw
 			//MEM
 			//lw $t1, 10($s0)
-			REGISTER[rt] = getRs(IR) + getOffset(IR);
-			//*(regs+rt) = *(mem+( *(regs+rs)+offset) );
+			if (rt == sp) {
+				REGISTER[rt] = MEM(0x80000000 + (fn * 4), 0, 0, 2);
+			}
+			else {
+				REGISTER[rt] = MEM(0x10000000 + (rt * 1000 + (fn * 4)), 0, 0, 2);
+			}
+			printf("\nrt :: %d\n", REGISTER[rt]);
 		}
 		else if (op == 36) {
 			//lbu
 			// MEM
-			REGISTER[rt] = getRs(IR) + getOffset(IR);
+			if (rt == sp) {
+				REGISTER[rt] = MEM(0x80000000 + (fn * 4), 0, 0, 0);
+			}
+			else {
+				REGISTER[rt] = MEM(0x10000000 + (rt * 1000 + (fn * 4)), 0, 0, 0);
+			}
+			//REGISTER[rt] = getRs(IR) + getOffset(IR);
 			// *(mem+( *(regs+rs)+offset) ) = *(regs+rt);
 		}
 		else if (op == 40) {
 			//sb
 			// MEM
-			REGISTER[rt] = getRs(IR) + getOffset(IR);
+			// sw $16, 0($10)
+			// op = 43, fn=0, rs=10, rt=16, rd=0
+			if (rt == sp) {
+				//REGISTER[rt] = MEM(0x80000000 + (fn * 4), 0, 0, 0);
+				// rs의 rd*4번째 주소에 reg(rt)를 넣는다.
+				MEM(0x80000000 + (rd * 4), REGISTER[rt], 1, 0);
+			}
+			else {
+				REGISTER[rt] = MEM(0x10000000 + (rt * 1000 + (fn * 4)), 0, 0, 0);
+				MEM(0x10000000 + (rs * 1000 + (rd * 4)), REGISTER[rt], 1, 0);
+				// 여기까지
+			}
+			//REGISTER[rt] = getRs(IR) + getOffset(IR);
 			// *(mem+( *(regs+rs)+offset) ) = *(regs+rt);
 		}
 		else if (op == 43) {
 			//sw
 			//MEM
-			REGISTER[rt] = getRs(IR) + getOffset(IR);
+			if (rt == sp) {
+				MEM(0x80000000 + (rd * 4), REGISTER[rt], 1, 0);
+			}
+			else {
+				MEM(0x10000000 + (rs * 1000 + (rd * 4)), REGISTER[rt], 1, 0);
+			}
+			//REGISTER[rt] = getRs(IR) + getOffset(IR);
 			//*(mem + (*(regs + rs) + offset)) = *(regs + rt);
 		}
 	}
