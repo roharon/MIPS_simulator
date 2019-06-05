@@ -7,7 +7,7 @@ int SP = 0x80000000;
 
 void setPC(unsigned int);
 
-unsigned int REG(unsigned int A, unsigned int V, unsigned int nRW) {
+unsigned int REG(int A, int V, unsigned int nRW) {
 	// A : memory address
 	// V: write value
 	// nRW: 0-> Read, 1-> Write

@@ -7,7 +7,7 @@ extern int PC;
 int step(void) {
 	//instruction fetch
 
-	int IR = MEM(PC, 0, 0, 2);
+	long long IR = MEM(PC, 0, 0, 2);
 	int offset;
 	
 
@@ -26,7 +26,7 @@ int step(void) {
 		if (fn == 32) {
 			//REGISTER[rd] = ALU(ADD, REGISTER[rs], REGISTER[rt]);
 			REG(rd, ALU(ADD, REG(rs, 0, 0), REG(rt, 0, 0)), 1);
-			printf("\nADD - 저장되는 rd : %d rs : %d + rt : %d\n", REGISTER[rd], REGISTER[rs], REGISTER[rt]);
+			//printf("\nADD - 저장되는 rd : %d rs : %d + rt : %d\n", REGISTER[rd], REGISTER[rs], REGISTER[rt]);
 				
 		}
 		else if (fn == 34) {
@@ -135,12 +135,18 @@ int step(void) {
 			// TODO rechange to for MEM
 			// lw $16, 0($10)
 			// op = 35, fn = 0, rs = 10, rt = 16
+			/*
 			if (rt == sp) {
 				REGISTER[rt] = MEM(0x80000000 + (fn * 4), 0, 0, 2);
 			}
 			else {
 				REGISTER[rt] = MEM(0x10000000 + (rt * 1000 + (fn * 4)), 0, 0, 2);
-			}
+			}*/
+			printf("\nlui operand is %x \n", operand);
+			//
+			printf("IR is %x\n", IR);
+			REG(rt, operand<<16, 1);
+			// 2byte로 저장.
 			
 			//*(regs+rt) = *(mem+( *(regs+rs)+offset) );
 		}

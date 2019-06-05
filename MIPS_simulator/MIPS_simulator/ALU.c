@@ -44,7 +44,7 @@ int logicOperation(int X, int Y, int C)
 		return X ^ Y;
 	else
 		// NOR
-		return !(X | Y);
+		return ~(X | Y);
 }
 
 int addSubtract(int X, int Y, int C) {
@@ -86,7 +86,9 @@ int shiftOperation(int V, int Y, int C) {
 	}
 	else if (C == 2) {
 		// Shift right logical
-		ret = (V >> Y) & ~(((0x1 << sizeof(V)) >> Y) << 1);
+		//ret = (V >> Y) & ~(((0x1 << (sizeof(int)*8)) >> Y) << 1);
+		int mask = ~(-1 << Y) << (32 - Y);
+		ret = ~mask & ((V >> Y) | mask);
 	}
 	else {
 		// Shift right artihmetic

@@ -4,7 +4,7 @@
 extern int PC;
 
 int LoadBin(char* PATH) {
-	PATH = "C:/roharon98/HUFS/Computer_structure/report3/machine_example/as_ex02_logic.bin";
+	PATH = "C:/roharon98/HUFS/Computer_structure/report3/machine_example/as_ex03_ifelse.bin";
 
 	// PATH의 bin파일을 로드
 	FILE *fpointer = NULL;
