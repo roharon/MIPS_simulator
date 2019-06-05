@@ -69,6 +69,9 @@ int step(void) {
 				// syscall 10일때 500 반환
 			}
 		}
+		else if (fn == 8) {
+			setPC(REG(ra, 0, 0));
+		}
 		else {
 			printf("Undefined Inst~");
 		}
@@ -92,7 +95,14 @@ int step(void) {
 			//jal
 			//REGISTER[ra] = PC + 4;
 			REG(ra, PC + 4, 1);
-			PC = jta;
+			//printf("\nPC+4's IR : %x", MEM(PC + 4, 0, 0, 2));
+			//printf("\nPC+8's IR : %x", MEM(PC + 8, 0, 0, 2));
+			//printf("\nPC+12's IR : %x", MEM(PC + 12, 0, 0, 2));
+			//printf("\nPC+16's IR : %x", MEM(PC + 16, 0, 0, 2));
+			//printf("\nPC+20's IR : %x", MEM(PC + 20, 0, 0, 2));
+
+			setPC(PC + (jta & 0x000FFFFF));
+			//printf("\n jump target adr : %x\n", jta);
 		}
 		else if (op == 4) {
 			//beq
@@ -109,6 +119,7 @@ int step(void) {
 		else if (op == 8) {
 			//addi
 			REG(rd, REG(rs,0,0) + operand, 1);
+			printf("\noperand is %d, %x\n", operand, operand);
 			//REGISTER[rd] = REGISTER[rs] + getOffset(IR);
 		}
 		else if (op == 10) {
@@ -132,16 +143,6 @@ int step(void) {
 		}
 		else if (op == 15) {
 			//lui
-			// TODO rechange to for MEM
-			// lw $16, 0($10)
-			// op = 35, fn = 0, rs = 10, rt = 16
-			/*
-			if (rt == sp) {
-				REGISTER[rt] = MEM(0x80000000 + (fn * 4), 0, 0, 2);
-			}
-			else {
-				REGISTER[rt] = MEM(0x10000000 + (rt * 1000 + (fn * 4)), 0, 0, 2);
-			}*/
 			printf("\nlui operand is %x \n", operand);
 			//
 			printf("IR is %x\n", IR);
@@ -165,10 +166,11 @@ int step(void) {
 			//MEM
 			//lw $t1, 10($s0)
 			if (rt == sp) {
-				REGISTER[rt] = MEM(0x80000000 + (fn * 4), 0, 0, 2);
+				//REGISTER[rt] = MEM(0x80000000 + (fn * 4), 0, 0, 2);
+				REG(rt, MEM(0x80000000 + (fn * 4), 0, 0, 2), 1);
 			}
 			else {
-				REGISTER[rt] = MEM(0x10000000 + (rt * 1000 + (fn * 4)), 0, 0, 2);
+				REG(rt, MEM(0x10000000 + (rt * 1000 + (fn * 4)), 0, 0, 2), 1);
 			}
 			printf("\nrt :: %d\n", REGISTER[rt]);
 		}
@@ -176,10 +178,12 @@ int step(void) {
 			//lbu
 			// MEM
 			if (rt == sp) {
-				REGISTER[rt] = MEM(0x80000000 + (fn * 4), 0, 0, 0);
+				//REGISTER[rt] = MEM(0x80000000 + (fn * 4), 0, 0, 1);
+				REG(rt, MEM(0x80000000 + (fn * 4), 0, 0, 1), 1);
 			}
 			else {
-				REGISTER[rt] = MEM(0x10000000 + (rt * 1000 + (fn * 4)), 0, 0, 0);
+				//REGISTER[rt] = MEM(0x10000000 + (rt * 1000 + (fn * 4)), 0, 0, 0);
+				REG(rt, MEM(0x10000000 + (rt * 1000 + (fn * 4)), 0, 0, 0), 1);
 			}
 			//REGISTER[rt] = getRs(IR) + getOffset(IR);
 			// *(mem+( *(regs+rs)+offset) ) = *(regs+rt);
@@ -192,11 +196,11 @@ int step(void) {
 			if (rt == sp) {
 				//REGISTER[rt] = MEM(0x80000000 + (fn * 4), 0, 0, 0);
 				// rs의 rd*4번째 주소에 reg(rt)를 넣는다.
-				MEM(0x80000000 + (rd * 4), REGISTER[rt], 1, 0);
+				MEM(0x80000000 + (rd * 4), REG(rt,0,0), 1, 0);
 			}
 			else {
-				REGISTER[rt] = MEM(0x10000000 + (rt * 1000 + (fn * 4)), 0, 0, 0);
-				MEM(0x10000000 + (rs * 1000 + (rd * 4)), REGISTER[rt], 1, 0);
+				//REGISTER[rt] = MEM(0x10000000 + (rt * 1000 + (fn * 4)), 0, 0, 0);
+				MEM(0x10000000 + (rs * 1000 + (rd * 4)), REG(rt,0,0), 1, 0);
 				// 여기까지
 			}
 			//REGISTER[rt] = getRs(IR) + getOffset(IR);
@@ -206,11 +210,12 @@ int step(void) {
 			//sw
 			//MEM
 			if (rt == sp) {
-				MEM(0x80000000 + (rd * 4), REGISTER[rt], 1, 0);
+				MEM(0x80000000 + (rd * 4), REG(rt,0,0), 1, 0);
 			}
 			else {
-				MEM(0x10000000 + (rs * 1000 + (rd * 4)), REGISTER[rt], 1, 0);
+				MEM(0x10000000 + (rs * 1000 + (rd * 4)), REG(rt,0,0), 1, 0);
 			}
+			printf("\nsp --> %x\n", MEM(0x80000000 + (rd * 4), REG(rt, 0, 0), 1, 0));
 			//REGISTER[rt] = getRs(IR) + getOffset(IR);
 			//*(mem + (*(regs + rs) + offset)) = *(regs + rt);
 		}
