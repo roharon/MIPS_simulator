@@ -17,42 +17,49 @@ int step(void) {
 	int rs = getRs(IR);
 	int rt = getRt(IR);
 	int rd = getRd(IR);
+	int sh = getSh(IR);
 	printf("PC : %x\n", PC);
 	printf("IR : %x\n", IR);
-	printf("op = %d fn = %d rs =%d\nrt = %d rd = %d\n", op, fn, rs, rt, rd);
+	printf("op = %d rs =%d rt = %d rd = %d sh = %d fn = %d \n", op, rs, rt, rd,  sh, fn);
 	if (op == 0) {
 		// opcode 000000 - R-format
 		if (fn == 32) {
-			REGISTER[rd] = ALU(ADD, REGISTER[rs], REGISTER[rt]);
+			//REGISTER[rd] = ALU(ADD, REGISTER[rs], REGISTER[rt]);
+			REG(rd, ALU(ADD, REG(rs, 0, 0), REG(rt, 0, 0)), 1);
 			printf("\nADD - 저장되는 rd : %d rs : %d + rt : %d\n", REGISTER[rd], REGISTER[rs], REGISTER[rt]);
 				
 		}
 		else if (fn == 34) {
 			REGISTER[rd] = ALU(SUB, REGISTER[rs], REGISTER[rt]);
+			REG(rd, ALU(SUB, REG(rs, 0, 0), REG(rt, 0, 0)), 1);
 		}
 		else if (fn == 0) {
-			REGISTER[rd] = ALU(SLL, REGISTER[rs], REGISTER[rt]);
+			REG(rd, ALU(SLL, REG(rt, 0, 0), sh), 1);
 		}
 		else if (fn == 2) {
-			REGISTER[rd] = ALU(SRL, REGISTER[rs], REGISTER[rt]);
+			REG(rd, ALU(SRL, REG(rt, 0, 0), sh), 1);
 		}
 		else if (fn == 3) {
-			REGISTER[rd] = ALU(SRA, REGISTER[rs], REGISTER[rt]);
+			REG(rd, ALU(SRA, REG(rt, 0, 0), sh), 1);
 		}
 		else if (fn == 42) {
-			REGISTER[rd] = ALU(SL, REGISTER[rs], REGISTER[rt]);
+			REG(rd, ALU(SRA, REG(rt, 0, 0), sh), 1);
 		}
 		else if (fn == 36) {
-			REGISTER[rd] = ALU(AND, REGISTER[rs], REGISTER[rt]);
+			//REGISTER[rd] = ALU(AND, REGISTER[rs], REGISTER[rt]);
+			REG(rd, ALU(AND, REG(rs, 0, 0), REG(rt, 0, 0)), 1);
 		}
 		else if (fn == 37) {
-			REGISTER[rd] = ALU(OR, REGISTER[rs], REGISTER[rt]);
+			REG(rd, ALU(OR, REG(rs, 0, 0), REG(rt, 0, 0)), 1);
+
 		}
 		else if (fn == 38) {
-			REGISTER[rd] = ALU(XOR, REGISTER[rs], REGISTER[rt]);
+			REG(rd, ALU(XOR, REG(rs, 0, 0), REG(rt, 0, 0)), 1);
+
 		}
 		else if (fn == 39) {
-			REGISTER[rd] = ALU(NOR, REGISTER[rs], REGISTER[rt]);
+			REG(rd, ALU(NOR, REG(rs, 0, 0), REG(rt, 0, 0)), 1);
+			//REGISTER[rd] = ALU(NOR, REGISTER[rs], REGISTER[rt]);
 		}
 		else if (fn == 12) {
 			if (REG(v0,0,0) == 10) {

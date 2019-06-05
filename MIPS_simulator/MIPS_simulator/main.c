@@ -75,8 +75,9 @@ int main(int argc, char* argv[]) {
 			break;
 
 		case 's':
-			if (step() == 500) {
-				printf("\n--- exit by systemcall 10 ---\n");
+			if (500 == step()) {
+				printf("\n--- program exit - systemcall 10 ---\nPC를 초기값으로 설정합니다.\n");
+				setPC(0x00400000);
 			}
 			break;
 

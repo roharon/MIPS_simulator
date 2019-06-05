@@ -16,6 +16,8 @@ unsigned int MEM(unsigned int A, int V, int nRW, int S) {
 	// S : 0 byte | S : 1 half word | S : 2 word
 	// nRW : 0 -> Read, 1 -> Write
 
+	//s0
+	// 800 00000
 	unsigned int sel, offset;
 	unsigned char *pM;
 	sel = A >> 20;    offset = A & 0xFFFFF;

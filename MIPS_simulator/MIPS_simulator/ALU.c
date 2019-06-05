@@ -67,7 +67,7 @@ int addSubtract(int X, int Y, int C) {
 
 // V is 5bit shift amount
 int shiftOperation(int V, int Y, int C) {
-	// C32 == 11
+
 
 	int ret;
 	if (C < 0 || C > 3) {
@@ -81,6 +81,8 @@ int shiftOperation(int V, int Y, int C) {
 	else if (C == 1) {
 		// Shift left logical
 		ret = V << Y;
+		//printf("\n sll : ret %x <- %x %x \n", ret, V, Y);
+
 	}
 	else if (C == 2) {
 		// Shift right logical

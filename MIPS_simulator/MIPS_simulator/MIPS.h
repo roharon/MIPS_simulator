@@ -91,6 +91,7 @@ int getRt(int);
 int getRd(int IR);
 int getOffset(int IR);
 int getJta(int);
+int getSh(int);
 // REG.c prototype
 
 // step.c

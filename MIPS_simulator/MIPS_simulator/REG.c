@@ -1,5 +1,6 @@
 #include "MIPS.h"
 
+extern char* stackMEM;
 int* REGISTER;
 int PC = 0x400000;
 int SP = 0x80000000;
@@ -10,9 +11,13 @@ unsigned int REG(unsigned int A, unsigned int V, unsigned int nRW) {
 	// A : memory address
 	// V: write value
 	// nRW: 0-> Read, 1-> Write
-
 	if (nRW == 0) {
+		if (A == s0) {
+			//s0
+			//V = stackMEM[0];
+		}
 		//read
+		//if()
 		V = *(REGISTER + (A * 4));
 		// int니 4byte씩 증가
 		return V;
@@ -22,8 +27,7 @@ unsigned int REG(unsigned int A, unsigned int V, unsigned int nRW) {
 		*(REGISTER + (A * 4)) = V;
 		return 0;
 	}
-
-
+	return 0;
 }
 
 void showRegister(void) {
@@ -74,4 +78,8 @@ int getOffset(int IR) {
 
 int getJta(int IR) {
 	return fromBinary(substr(toBinary(IR), 6, 26));
+}
+
+int getSh(int IR) {
+	return fromBinary(substr(toBinary(IR), 21, 5));
 }
