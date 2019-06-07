@@ -4,7 +4,7 @@
 extern int PC;
 
 int LoadBin(char* PATH) {
-	PATH = "C:/roharon98/HUFS/Computer_structure/report3/machine_example/as_ex02_logic.bin";
+	//PATH = "C:/roharon98/HUFS/Computer_structure/report3/machine_example/as_ex02_logic.bin";
 	// 임시 경로. 제출 전 삭제 바람
 
 
