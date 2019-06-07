@@ -42,18 +42,6 @@ int main(int argc, char* argv[]) {
 			continue;
 		}
 
-		//printf("%s\n", cmd[1]);
-
-		if (!strcmp(cmd, "-")) {
-			printf("pc : %x\n", getPC());
-
-			printf("%x\n", MEM(0x00400000, 1, 0, 2));
-			printf("%x\n", MEM(0x00400000 + 4, 1, 0, 2));
-			printf("%x\n", MEM(0x00400000 + 8, 1, 0, 2));
-			printf("%x\n", MEM(0x00400000 + 12, 1, 0, 2));
-			// 테스트용 명령어
-		}
-
 		else if (!strcmp(cmd, "sr")) {
 			scanf("%s", argv1);
 			scanf("%s", argv2);
