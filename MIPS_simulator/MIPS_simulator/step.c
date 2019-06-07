@@ -1,6 +1,7 @@
 #include "MIPS.h"
 
 extern int* REGISTER;
+extern char* stackMEM;
 extern int PC;
 
 int break_point = 0;
@@ -51,7 +52,6 @@ int step(void) {
 			REG(rd, ALU(SRA, REG(rt, 0, 0), sh), 1);
 		}
 		else if (fn == 36) {
-			//REGISTER[rd] = ALU(AND, REGISTER[rs], REGISTER[rt]);
 			REG(rd, ALU(AND, REG(rs, 0, 0), REG(rt, 0, 0)), 1);
 		}
 		else if (fn == 37) {
@@ -64,7 +64,6 @@ int step(void) {
 		}
 		else if (fn == 39) {
 			REG(rd, ALU(NOR, REG(rs, 0, 0), REG(rt, 0, 0)), 1);
-			//REGISTER[rd] = ALU(NOR, REGISTER[rs], REGISTER[rt]);
 		}
 		else if (fn == 12) {
 			if (REG(v0,0,0) == 10) {
@@ -97,14 +96,7 @@ int step(void) {
 			PC = jta;
 		}
 		else if (op == 3) {
-			//jal
-			//REGISTER[ra] = PC + 4;
 			REG(ra, PC + 4, 1);
-			//printf("\nPC+4's IR : %x", MEM(PC + 4, 0, 0, 2));
-			//printf("\nPC+8's IR : %x", MEM(PC + 8, 0, 0, 2));
-			//printf("\nPC+12's IR : %x", MEM(PC + 12, 0, 0, 2));
-			//printf("\nPC+16's IR : %x", MEM(PC + 16, 0, 0, 2));
-			//printf("\nPC+20's IR : %x", MEM(PC + 20, 0, 0, 2));
 
 			setPC(PC + (jta & 0x000FFFFF));
 			//printf("\n jump target adr : %x\n", jta);
@@ -125,7 +117,6 @@ int step(void) {
 			//addi
 			REG(rd, REG(rs,0,0) + operand, 1);
 			printf("\noperand is %d, %x\n", operand, operand);
-			//REGISTER[rd] = REGISTER[rs] + getOffset(IR);
 		}
 		else if (op == 10) {
 			//slti
@@ -134,23 +125,17 @@ int step(void) {
 		else if (op == 12) {
 			//andi
 			REG(rt, REG(rs,0,0) & operand, 1);
-			//REGISTER[rt] = getRs(IR) & getOffset(IR);
 		}
 		else if (op == 13) {
 			//ori
 			REG(rt, REG(rs,0,0) | operand, 1);
-			//REGISTER[rt] = getRs(IR) | getOffset(IR);
 		}
 		else if (op == 14) {
 			//xori
 			REG(rt, REG(rs,0,0)^operand, 1);
-			//REGISTER[rt] = getRs(IR) ^ getOffset(IR);
 		}
 		else if (op == 15) {
 			//lui
-			//printf("\nlui operand is %d \n", operand);
-			//
-			//printf("IR is %x\n", IR);
 			if (rt == sp) {
 				REG(rt, MEM(0x80000000 + (fn * 4), 0, 0, 2)<<16, 1);
 			}
@@ -179,27 +164,21 @@ int step(void) {
 			//MEM
 			//lw $t1, 10($s0)
 			if (rt == sp) {
-				//REGISTER[rt] = MEM(0x80000000 + (fn * 4), 0, 0, 2);
 				REG(rt, MEM(0x80000000 + (fn * 4), 0, 0, 2), 1);
 			}
 			else {
 				REG(rt, MEM(0x10000000 + (rt * 1000 + (fn * 4)), 0, 0, 2), 1);
 			}
-			//printf("\nrt :: %d\n", REGISTER[rt]);
 		}
 		else if (op == 36) {
 			//lbu
 			// MEM
 			if (rt == sp) {
-				//REGISTER[rt] = MEM(0x80000000 + (fn * 4), 0, 0, 1);
 				REG(rt, MEM(0x80000000 + (fn * 4), 0, 0, 1), 1);
 			}
 			else {
-				//REGISTER[rt] = MEM(0x10000000 + (rt * 1000 + (fn * 4)), 0, 0, 0);
 				REG(rt, MEM(0x10000000 + (rt * 1000 + (fn * 4)), 0, 0, 0), 1);
 			}
-			//REGISTER[rt] = getRs(IR) + getOffset(IR);
-			// *(mem+( *(regs+rs)+offset) ) = *(regs+rt);
 		}
 		else if (op == 40) {
 			//sb
@@ -207,17 +186,12 @@ int step(void) {
 			// sw $16, 0($10)
 			// op = 43, fn=0, rs=10, rt=16, rd=0
 			if (rt == sp) {
-				//REGISTER[rt] = MEM(0x80000000 + (fn * 4), 0, 0, 0);
 				// rs의 rd*4번째 주소에 reg(rt)를 넣는다.
 				MEM(0x80000000 + (rd * 4), REG(rt,0,0), 1, 0);
 			}
 			else {
-				//REGISTER[rt] = MEM(0x10000000 + (rt * 1000 + (fn * 4)), 0, 0, 0);
 				MEM(0x10000000 + (rs * 1000 + (rd * 4)), REG(rt,0,0), 1, 0);
-				// 여기까지
 			}
-			//REGISTER[rt] = getRs(IR) + getOffset(IR);
-			// *(mem+( *(regs+rs)+offset) ) = *(regs+rt);
 		}
 		else if (op == 43) {
 			//sw
@@ -228,8 +202,6 @@ int step(void) {
 			else {
 				MEM(0x10000000 + (rs * 1000 + (rd * 4)), REG(rt,0,0), 1, 0);
 			}
-			//REGISTER[rt] = getRs(IR) + getOffset(IR);
-			//*(mem + (*(regs + rs) + offset)) = *(regs + rt);
 		}
 	}
 
@@ -244,7 +216,12 @@ int step(void) {
 }
 
 
-int setBreakPoint(unsigned int argv1) {
+void setBreakPoint(unsigned int argv1) {
 	break_point = argv1;
 	printf("브레이크 : %x\n", break_point);
+}
+
+void alloc_REG() {
+	REGISTER = (int*)calloc(32, sizeof(int));
+	REGISTER[sp] = stackMEM;
 }

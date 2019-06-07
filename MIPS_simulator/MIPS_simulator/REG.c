@@ -10,7 +10,7 @@ void setPC(unsigned int);
 unsigned int REG(int A, int V, unsigned int nRW) {
 	// A : register No.sd
 	// V: write value
-	// nRW: 0-> Read, 1-> Write
+	// nRW: 0-> Read, 1-> Writef
 	if (nRW == 0) {
 		if (A == s0) {
 			//s0

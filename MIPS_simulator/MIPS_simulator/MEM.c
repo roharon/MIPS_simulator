@@ -115,16 +115,3 @@ S(size) : 0 -> Byte, 1 -> Half word, 2 -> Word
 
 Word : 4byte, halfword : 2byte, byte : 1byte
 */
-
-/*
-int main() {
-	MEM(0x00411110, 5, 1, 0);
-	// 0x00411110 에 값 5을 Write. Size는 Word(4bytes)
-
-	int result = MEM(0x7FF11110, 3, 0, 0);
-	// 주소에 저장된 값을 로드한다.
-
-	printf("MEM값 읽기 : %d", result);
-	return 0;
-}
-*/

@@ -96,11 +96,12 @@ int getJta(int);
 int getSh(int);
 
 int setSr(int argv1, int argv2);
+void alloc_REG();
 // REG.c prototype
 
 // step.c
 int step(void);
-int setBreakPoint(unsigned int);
+void setBreakPoint(unsigned int);
 // step.c prototype
 
 //loadToMemory.c

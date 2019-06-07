@@ -5,7 +5,7 @@ extern int PC;
 
 int LoadBin(char* PATH) {
 	//PATH = "C:/roharon98/HUFS/Computer_structure/report3/machine_example/as_ex02_logic.bin";
-	// 임시 경로. 제출 전 삭제 바람
+	// 임시 경로. 제출 전 삭제
 
 
 	// PATH의 bin파일을 로드
@@ -30,25 +30,12 @@ int LoadBin(char* PATH) {
 	setPC(0x00400000);
 
 	while(1 == fread(&data, 1, 1, fpointer)) {
-		/*
-		if ((ind % 4 == 0) && (ind >= 4))
-			put_data = data;
-		else if (((ind - 1) % 4) == 0 && (ind >= 4))
-			put_data = (put_data * 16) + data;
-		else if (((ind - 2) % 4) == 0 && (ind >= 4))
-			put_data = (put_data * 16) + data;
-		else if (((ind-3) % 4 == 0) && (ind >= 4)) {
-			put_data = (put_data * 16) + data;
-			MEM(0x00400000 + (4 * ind), data, 1, 0);
-		}
-		*/
+
 		if (ind >= 8) {
 			MEM(0x00400000 + (ind-8), data, 1, 0);
 			//printf("\n%x and MEM is %x\n", data, MEM(0x00400000 + (ind - 8), data, 0, 0));
 			//binary에서 개수부분 빼고
 		}
-
-		// 인덱스 하나씩 저장
 
 		
 		ind++;
@@ -58,6 +45,3 @@ int LoadBin(char* PATH) {
 	fclose(fpointer);
 	return 0;
 }
-
-//bin 파일
-// 00~03까지 

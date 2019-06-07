@@ -17,9 +17,6 @@ char* toBinary(int val) {
 
 	strcat(Bin_zero, Bin_temp);
 	strcpy(Bin_temp, Bin_zero);
-	//printf("\nzero is %s\n", Bin_zero);
-	//printf("Bin_temp is %s\n", Bin_temp);
-	//printf("op substr is %s\n", fromBinary(substr(Bin_temp, 0, 6)));
 	// TODO fromBinary호출 잘 되나 확인
 
 

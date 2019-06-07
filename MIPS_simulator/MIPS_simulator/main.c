@@ -17,9 +17,8 @@ char* result;
 char user_cmd = ' ';
 
 int main(int argc, char* argv[]) {
-	REGISTER = (int*)calloc(32, sizeof(int));
-	REGISTER[sp] = stackMEM;
-	// sp레지스터 stackMEM에 연결
+	alloc_REG();
+	// 레지스터 할당
 
 	char var1[10] = "";
 	char var2[10] = "";
@@ -167,7 +166,6 @@ int main(int argc, char* argv[]) {
 			else {
 				//breakpoint 설정
 				temp_argv1 = (unsigned int)strtoul(argv1, NULL, 16);
-				printf("tem_argv1 is %x\n", temp_argv1);
 				setBreakPoint(temp_argv1);
 			}
 		}
