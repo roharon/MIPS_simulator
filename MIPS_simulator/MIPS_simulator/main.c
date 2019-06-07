@@ -37,17 +37,20 @@ int main(int argc, char* argv[]) {
 		//scanf("%[^\n]", cmd);
 		fflush(stdin);
 
-		if ((!did_load) && (strcmp(cmd,"l"))) {
+		if (((!did_load) && (!EQUAL(cmd, "l")))) {
+			if (EQUAL(cmd, "x"))
+				break;
+
 			printf("먼저 binary파일을 로드해주세요\n");
 			continue;
 		}
 
-		else if (!strcmp(cmd, "sr")) {
+		if (!strcmp(cmd, "sr")) {
 			scanf("%s", argv1);
 			scanf("%s", argv2);
 
 			temp_argv1 = atoi(argv1);
-			temp_argv2 = atoi(argv2);
+			temp_argv2 = (unsigned int)strtoul(argv2, NULL, 16);
 			// atoi 실패시 0반환
 
 			if (!temp_argv2) {
@@ -85,7 +88,7 @@ int main(int argc, char* argv[]) {
 			// sm <location> <value> : 메모리 특정 주소의 값 설정
 		}
 
-		else if (!strcmp(cmd, "l")) {
+		else if (EQUAL(cmd, "l")) {
 			printf("== enter the File Name :: ");
 			scanf("%s", cmd);
 
@@ -100,12 +103,12 @@ int main(int argc, char* argv[]) {
 			}
 		}
 
-		else if (!strcmp(cmd, "j")) {
+		else if (EQUAL(cmd, "j")) {
 			scanf("%x", &target_address);
 			setPC(target_address);
 		}
 
-		else if (!strcmp(cmd, "g")) {
+		else if (EQUAL(cmd, "g")) {
 			int step_result = 0;
 
 			while (step_result != 500) {
@@ -124,7 +127,7 @@ int main(int argc, char* argv[]) {
 			// 500(systemcall 10)반환시 while 풀림
 		}
 
-		else if (!strcmp(cmd, "s")) {
+		else if (EQUAL(cmd, "s")) {
 			int step_result = step();
 			if (step_result == 500) {
 				printf("\n--- program exit - systemcall 10 ---\nPC를 초기값으로 설정합니다.\n");
@@ -135,7 +138,7 @@ int main(int argc, char* argv[]) {
 			}
 		}
 
-		else if (!strcmp(cmd, "m")) {
+		else if (EQUAL(cmd, "m")) {
 			// m <start> <end>
 			scanf("%s", argv1);
 			scanf("%s", argv2);
@@ -149,14 +152,14 @@ int main(int argc, char* argv[]) {
 				printMemory(temp_argv1, temp_argv2);
 		}
 
-		else if (!strcmp(cmd, "r")) {
+		else if (EQUAL(cmd, "r")) {
 			showRegister();		
 		}
 
-		else if (!strcmp(cmd, "break")) {
+		else if (EQUAL(cmd, "break")) {
 			scanf("%s", argv1);
 
-			if (!strcmp(argv1, "off")) {
+			if (EQUAL(argv1, "off")) {
 				// breakpoint off
 				printf("Break point 해제\n");
 				setBreakPoint(0);
@@ -169,7 +172,7 @@ int main(int argc, char* argv[]) {
 			}
 		}
 
-		else if (!strcmp(cmd, "x")) {
+		else if (EQUAL(cmd, "x")) {
 			printf("Bye!");
 			break;
 		}
@@ -179,8 +182,6 @@ int main(int argc, char* argv[]) {
 		*argv1 = "";
 		*argv2 = "";
 
-		getchar();
-		//엔터 버퍼 비우기
 	}
 
 
