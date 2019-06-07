@@ -76,6 +76,8 @@ char* toBinary(int val);
 
 // MEM.c
 unsigned int MEM(unsigned int A, int V, int nRW, int S);
+int setSm(unsigned int argv1, unsigned int argv2);
+int printMemory(unsigned int argv1, unsigned int argv2);
 // MEM.c prototype
 
 // REG.c
@@ -92,10 +94,13 @@ int getRd(int IR);
 int getOffset(int IR);
 int getJta(int);
 int getSh(int);
+
+int setSr(int argv1, int argv2);
 // REG.c prototype
 
 // step.c
 int step(void);
+int setBreakPoint(unsigned int);
 // step.c prototype
 
 //loadToMemory.c

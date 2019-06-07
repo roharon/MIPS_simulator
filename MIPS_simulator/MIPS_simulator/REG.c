@@ -8,7 +8,7 @@ int SP = 0x80000000;
 void setPC(unsigned int);
 
 unsigned int REG(int A, int V, unsigned int nRW) {
-	// A : memory address
+	// A : register No.sd
 	// V: write value
 	// nRW: 0-> Read, 1-> Write
 	if (nRW == 0) {
@@ -24,7 +24,14 @@ unsigned int REG(int A, int V, unsigned int nRW) {
 	}
 	else if (nRW == 1) {
 		//write
+		int temp_A = REG(A, 0, 0);
+		// 이전 REG A 정보
+
 		*(REGISTER + (A * 4)) = V;
+
+		if (temp_A != REG(A, 0, 0)) {
+			printf("\n레지스터 변경 R%d = %#x\n", A, REG(A, 0, 0));
+		}
 		return 0;
 	}
 	return 0;
@@ -36,7 +43,7 @@ void showRegister(void) {
 
 	for (int i = 0; i < REG_SIZE; i++) {
 		//printf("R%d = %d", i, REGISTER[i]);
-		printf("R%d = %x\n", i, REG(i, 0, 0));
+		printf("R%d = %#x\n", i, REG(i, 0, 0));
 	}
 }
 
@@ -82,4 +89,10 @@ int getJta(int IR) {
 
 int getSh(int IR) {
 	return fromBinary(substr(toBinary(IR), 21, 5));
+}
+
+int setSr(int argv1, int argv2) {
+	REG(argv1, argv2, 1);
+
+	return 0;
 }

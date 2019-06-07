@@ -2,10 +2,15 @@
 
 extern int* REGISTER;
 extern int PC;
+
+int break_point = 0;
+// 브레이크 포인트
+
 // TODO IR와 PC extern
 // TODO getOp(IR) getFn(IR) getRs(IR) getRt(IR) getRd(IR) getOffset(IR)구현
 int step(void) {
 	//instruction fetch
+
 
 	long long IR = MEM(PC, 0, 0, 2);
 	int offset;
@@ -18,9 +23,9 @@ int step(void) {
 	int rt = getRt(IR);
 	int rd = getRd(IR);
 	int sh = getSh(IR);
-	printf("PC : %x\n", PC);
+	printf("현 PC : %x\n", PC);
 	printf("IR : %x\n", IR);
-	printf("op = %d rs =%d rt = %d rd = %d sh = %d fn = %d \n", op, rs, rt, rd,  sh, fn);
+	//printf("op = %d rs =%d rt = %d rd = %d sh = %d fn = %d \n", op, rs, rt, rd,  sh, fn);
 	if (op == 0) {
 		// opcode 000000 - R-format
 		if (fn == 32) {
@@ -73,7 +78,7 @@ int step(void) {
 			setPC(REG(ra, 0, 0));
 		}
 		else {
-			printf("Undefined Inst~");
+			printf("==정의되지 않은 명령어입니다.==");
 		}
 	}
 	else {
@@ -143,10 +148,18 @@ int step(void) {
 		}
 		else if (op == 15) {
 			//lui
-			printf("\nlui operand is %x \n", operand);
+			//printf("\nlui operand is %d \n", operand);
 			//
-			printf("IR is %x\n", IR);
-			REG(rt, operand<<16, 1);
+			//printf("IR is %x\n", IR);
+			if (rt == sp) {
+				REG(rt, MEM(0x80000000 + (fn * 4), 0, 0, 2)<<16, 1);
+			}
+			else {
+				REG(rt, MEM(0x10000000 + (rt * 1000 + (fn * 4)), 0, 0, 2)<<16, 1);
+
+			}
+
+			// 0x10000000 + (rs * 1000 + (rd * 4)), REG(rt,0,0), 1, 0
 			// 2byte로 저장.
 			
 			//*(regs+rt) = *(mem+( *(regs+rs)+offset) );
@@ -155,10 +168,10 @@ int step(void) {
 			//lb
 			//MEM
 			if (rt == sp) {
-				REGISTER[rt] = MEM(0x80000000 + (fn * 4), 0, 0, 2);
+				REG(rt, MEM(0x80000000 + (fn * 4), 0, 0, 2), 1);
 			}
 			else {
-				REGISTER[rt] = MEM(0x10000000 + (rt * 1000 + (fn * 4)), 0, 0, 2);
+				REG(rt, MEM(0x10000000 + (rt * 1000 + (fn * 4)), 0, 0, 2), 1);
 			}
 		}
 		else if (op == 35) {
@@ -172,7 +185,7 @@ int step(void) {
 			else {
 				REG(rt, MEM(0x10000000 + (rt * 1000 + (fn * 4)), 0, 0, 2), 1);
 			}
-			printf("\nrt :: %d\n", REGISTER[rt]);
+			//printf("\nrt :: %d\n", REGISTER[rt]);
 		}
 		else if (op == 36) {
 			//lbu
@@ -215,11 +228,23 @@ int step(void) {
 			else {
 				MEM(0x10000000 + (rs * 1000 + (rd * 4)), REG(rt,0,0), 1, 0);
 			}
-			printf("\nsp --> %x\n", MEM(0x80000000 + (rd * 4), REG(rt, 0, 0), 1, 0));
 			//REGISTER[rt] = getRs(IR) + getOffset(IR);
 			//*(mem + (*(regs + rs) + offset)) = *(regs + rt);
 		}
 	}
+
+
+	if (break_point == PC) {
+		PC += 4;
+		return 100;
+	}
+
 	PC += 4;
 	return 0;
+}
+
+
+int setBreakPoint(unsigned int argv1) {
+	break_point = argv1;
+	printf("브레이크 : %x\n", break_point);
 }

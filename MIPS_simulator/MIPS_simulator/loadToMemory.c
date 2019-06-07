@@ -4,7 +4,9 @@
 extern int PC;
 
 int LoadBin(char* PATH) {
-	PATH = "C:/roharon98/HUFS/Computer_structure/report3/machine_example/as_ex03_ifelse.bin";
+	PATH = "C:/roharon98/HUFS/Computer_structure/report3/machine_example/as_ex02_logic.bin";
+	// 임시 경로. 제출 전 삭제 바람
+
 
 	// PATH의 bin파일을 로드
 	FILE *fpointer = NULL;
@@ -15,13 +17,13 @@ int LoadBin(char* PATH) {
 	unsigned int put_data;
 	//MEM에 넣기 전, 4개씩 묶어 저장할때
 
-	printf("aaaa");
 	err = fopen_s(&fpointer, PATH, "rb");
+
+
 	if (err) {
 		printf("\n====== CAN NOT OPEN FILE =====\n%s \n", PATH);
 		return 400;
 	}
-	printf("read works\n");
 
 	// set PC
 
@@ -42,7 +44,7 @@ int LoadBin(char* PATH) {
 		*/
 		if (ind >= 8) {
 			MEM(0x00400000 + (ind-8), data, 1, 0);
-			printf("\n%x and MEM is %x\n", data, MEM(0x00400000 + (ind - 8), data, 0, 0));
+			//printf("\n%x and MEM is %x\n", data, MEM(0x00400000 + (ind - 8), data, 0, 0));
 			//binary에서 개수부분 빼고
 		}
 

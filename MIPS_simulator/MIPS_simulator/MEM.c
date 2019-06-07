@@ -34,12 +34,13 @@ unsigned int MEM(unsigned int A, int V, int nRW, int S) {
 		if (nRW == 0) {
 			//read
 			V = *(pM + offset);
-			printf("\n V is %x\n", V);
+			//printf("\n V is %x\n", V);
 			return V;
 		}
 		else if (nRW == 1) {
 			//write
 			*(pM + offset) = V;
+			//printf("\n*(pM+offset) is %d\n", *(pM + offset));
 			return 0;
 		}
 
@@ -80,6 +81,34 @@ unsigned int MEM(unsigned int A, int V, int nRW, int S) {
 	}
 	return 5;
 }
+
+int setSm(unsigned int argv1, int argv2) {
+
+	int result_MEM = MEM(argv1, argv2, 1, 2);
+	// 0이면 성공
+	
+	if ((result_MEM == 1) || (result_MEM==5)) {
+		// No size , other error
+		return 1;
+	}
+	else if (result_MEM == 0) {
+		return 0;
+	}
+}
+
+int printMemory(unsigned int argv1, unsigned int argv2) {
+	// 0이면 성공, 실패시 return 1
+	for (unsigned int i = argv1; i <= argv2; i += 4) {
+		int result_MEM = MEM(i, 0, 0, 2);
+		if (result_MEM == 1) {
+			return 1;
+		}
+		else {
+			printf("메모리 %#x = %d\n", i, result_MEM);
+		}
+	}
+}
+
 /*
 nRW : 0 -> Read, 1 -> Write
 S(size) : 0 -> Byte, 1 -> Half word, 2 -> Word
