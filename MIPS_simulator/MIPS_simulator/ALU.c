@@ -126,16 +126,3 @@ int checkSetLess(int X, int Y) {
 		ret = 0;
 	return ret;
 }
-
-void test(void) {
-	int x, y, c, s, z;
-
-	x = 2;
-	y = 1;
-
-	printf("x: % 8x, y : % 8x\n", x, y);
-	for (int i = 0; i < 16; i++) {
-		s = ALU(x, y, i, &z);
-		printf("s: % 8x, z : % 8x\n", s, z);
-	}
-}
